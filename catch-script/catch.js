@@ -5,7 +5,7 @@
             this.tabId = null;
             this.boundMessageHandler = this.handleBackgroundMessage.bind(this);
 
-            console.log("catch.js Start");
+            console.log("CatCatch: Constructor - Initializing...");
 
             // 初始化属性
             this.enable = true;  // 捕获开关
@@ -14,6 +14,7 @@
             this.catchMedia = [];   // 捕获的媒体数据
             this.mediaSize = 0; // 捕获的媒体数据大小
             this.setFileName = null;    // 文件名
+            console.log(`CatCatch: Constructor - Initial state: enable=${this.enable}, isComplete=${this.isComplete}, catchMedia.length=${this.catchMedia.length}, mediaSize=${this.mediaSize}`);
 
             // 移动面板相关属性
             this.x = 0;
@@ -461,7 +462,9 @@
          * @param {MouseEvent} event 
          */
         handleClean(event) {
+            console.log("CatCatch: handleClean called.");
             if (window.confirm(this.i18n("clearCacheConfirmation", "确认清除缓存?"))) {
+                console.log("CatCatch: Clearing cache confirmed by user.");
                 this.clearCache();
                 const $clean = this.catCatch.querySelector("#clean");
                 if (!$clean) return;
@@ -517,6 +520,11 @@
             if (checkHead) checkHead.checked = true;
 
             // ----- بداية التعديل المقترح -----
+            console.log("CatCatch: handleRestart called.");
+            const checkHead = this.catCatch.querySelector("#checkHead");
+            if (checkHead) checkHead.checked = true;
+
+            // ----- بداية التعديل المقترح -----
             console.log("CatCatch: Restarting capture. Clearing all media.");
             this.catchMedia = []; // مسح كامل للبيانات الملتقطة
             this.mediaSize = 0;
@@ -524,6 +532,7 @@
             if (this.tips) {
                 this.tips.innerHTML = this.i18n("waiting", "等待视频播放");
             }
+            console.log(`CatCatch: handleRestart - State after reset: isComplete=${this.isComplete}, catchMedia.length=${this.catchMedia.length}, mediaSize=${this.mediaSize}`);
             // ----- نهاية التعديل المقترح -----
 
             // clearCache() الأصلي قد لا يمسح كل شيء، لذا قمنا بالمسح المباشر أعلاه.
@@ -641,20 +650,25 @@
          * 核心函数 代理MediaSource方法
          */
         proxyMediaSourceMethods() {
+            console.log("CatCatch: proxyMediaSourceMethods called.");
             // 代理 addSourceBuffer 方法
             window.MediaSource.prototype.addSourceBuffer = new Proxy(window.MediaSource.prototype.addSourceBuffer, {
                 apply: (target, thisArg, argumentsList) => {
+                    const newMimeType = argumentsList[0];
+                    console.log(`CatCatch: addSourceBuffer called. MimeType: ${newMimeType}, Current isComplete: ${this.isComplete}, catchMedia length: ${this.catchMedia.length}`);
+
                     try {
-                        const newMimeType = argumentsList[0];
-                        // إذا كان الفيديو السابق قد اكتمل, فهذا فيديو جديد
-                        if (this.isComplete) {
-                            console.log("CatCatch: New video detected after completion. Clearing previous media.");
-                            this.catchMedia = []; // مسح البيانات القديمة
-                            this.mediaSize = 0;
-                            this.isComplete = false; // إعادة التعيين لبدء الالتقاط الجديد
-                        }
+                        // ----- بداية التعديل: تعليق الشرط مؤقتًا -----
+                        // if (this.isComplete) {
+                        //     console.log("CatCatch: addSourceBuffer - Clearing media because isComplete was true. (CONDITION TEMPORARILY DISABLED)");
+                        //     this.catchMedia = [];
+                        //     this.mediaSize = 0;
+                        //     this.isComplete = false;
+                        // }
+                        // ----- نهاية التعديل -----
 
                         const result = Reflect.apply(target, thisArg, argumentsList);
+                        console.log("CatCatch: addSourceBuffer - Original function called successfully.");
 
                         // 标题获取
                         setTimeout(() => { this.getFileName(); }, 2000);
@@ -662,26 +676,32 @@
 
                         this.catchMedia.push({ mimeType: newMimeType, bufferList: [] });
                         const index = this.catchMedia.length - 1;
+                        console.log(`CatCatch: addSourceBuffer - Pushed new media object. Index: ${index}, catchMedia.length: ${this.catchMedia.length}`);
 
                         // 代理 appendBuffer 方法
                         result.appendBuffer = new Proxy(result.appendBuffer, {
                             apply: (target, thisArg, argumentsList) => {
+                                const chunk = argumentsList[0];
+                                // console.log(`CatCatch: appendBuffer called. Current enable: ${this.enable}, Chunk size: ${chunk ? chunk.byteLength : 'N/A'}`);
                                 Reflect.apply(target, thisArg, argumentsList);
 
-                                if (this.enable && argumentsList[0]) {
-                                    this.mediaSize += argumentsList[0].byteLength || 0;
+                                if (this.enable && chunk) {
+                                    this.mediaSize += chunk.byteLength || 0;
                                     if (this.tips) {
                                         this.tips.innerHTML = this.i18n("capturingData", "捕获数据中...") + ": " + this.byteToSize(this.mediaSize);
                                     }
-                                    this.catchMedia[index].bufferList.push(argumentsList[0]);
+                                    this.catchMedia[index].bufferList.push(chunk);
+                                    // console.log(`CatCatch: appendBuffer - Data pushed to bufferList. Index: ${index}, bufferList length: ${this.catchMedia[index].bufferList.length}, total mediaSize: ${this.mediaSize}`);
+                                } else {
+                                    // console.log(`CatCatch: appendBuffer - Not enabled or no chunk. Enable: ${this.enable}, Chunk: ${chunk}`);
                                 }
                             }
                         });
 
                         return result;
                     } catch (error) {
-                        console.error("addSourceBuffer 代理错误:", error);
-                        return Reflect.apply(target, thisArg, argumentsList);
+                        console.error("CatCatch: addSourceBuffer proxy error:", error);
+                        return Reflect.apply(target, thisArg, argumentsList); // Ensure original is still called on error
                     }
                 }
             });
@@ -689,33 +709,36 @@
             // 代理 endOfStream 方法
             window.MediaSource.prototype.endOfStream = new Proxy(window.MediaSource.prototype.endOfStream, {
                 apply: (target, thisArg, argumentsList) => {
+                    console.log(`CatCatch: endOfStream called. Current enable: ${this.enable}`);
                     let originalResult;
                     try {
                         originalResult = Reflect.apply(target, thisArg, argumentsList);
+                        console.log("CatCatch: endOfStream - Original function called.");
 
                         if (this.enable) {
-                            this.isComplete = true; //  نقطة مهمة
+                            this.isComplete = true;
+                            console.log(`CatCatch: endOfStream - Set isComplete to true. Current tips: ${this.tips ? this.tips.innerHTML : 'N/A'}`);
                             if (this.tips) {
                                 this.tips.innerHTML = this.i18n("captureCompleted", "捕获完成");
                             }
                             // MODIFIED PART: Use settings from background.js instead of localStorage
                             if (this.settings && this.settings.watchedOnCaptureComplete) {
-                                // console.log("CatCatch (original): 'watchedOnCaptureComplete' is true, triggering download.");
+                                console.log("CatCatch: endOfStream - watchedOnCaptureComplete is true, scheduling download.");
                                 setTimeout(() => this.catchDownload(), 500);
                             }
+                        } else {
+                            console.log("CatCatch: endOfStream - Not enabled.");
                         }
                     } catch (error) {
                         console.error("CatCatch: endOfStream proxy error:", error);
-                        // إذا حدث خطأ بعد استدعاء الدالة الأصلية، تأكد من أننا لا نزال نعيد نتيجتها إن أمكن
-                        // أو نعيد استدعاءها إذا لم يتم ذلك بعد.
-                        // في هذا النمط، originalResult يجب أن يكون قد تم تعيينه.
                         if (originalResult === undefined) {
                            return Reflect.apply(target, thisArg, argumentsList);
                         }
                     }
-                    return originalResult; // إرجاع نتيجة الدالة الأصلية
+                    return originalResult;
                 }
             });
+            console.log("CatCatch: proxyMediaSourceMethods finished setup.");
         }
 
         /**
@@ -861,10 +884,15 @@
                 this.downloadDirect();
             }
             // ----- نهاية التعديل -----
+            console.log(`CatCatch: catchDownload - Merge options: noMerge=${noMergeSelected}, localMerge=${localMergeSelected}, ffmpegMerge=${ffmpegMergeSelected}`);
+            console.log(`CatCatch: catchDownload - Current catchMedia length: ${this.catchMedia.length}`);
 
             if (this.isComplete) {
                 // مسح ذاكرة التخزين المؤقت يتم الآن التعامل معه بشكل أكثر تحديدًا بعد نجاح العملية
-                if (localStorage.getItem("CatCatchCatch_completeClearCache") == "checked") { this.clearCache(); }
+                if (localStorage.getItem("CatCatchCatch_completeClearCache") == "checked") {
+                    console.log("CatCatch: catchDownload - Clearing cache because isComplete and completeClearCache are true.");
+                    this.clearCache();
+                }
                 if (this.tips) {
                     this.tips.innerHTML = this.i18n("downloadCompleted", "下载完毕...");
                 }
@@ -1058,7 +1086,7 @@
             if (this.tips) { // تحديث الواجهة لتعكس المسح
                 this.tips.innerHTML = this.i18n("waiting", "等待视频播放");
             }
-            console.log("CatCatch: Cache cleared completely.");
+            console.log(`CatCatch: clearCache - Cache cleared. isComplete=${this.isComplete}, catchMedia.length=${this.catchMedia.length}, mediaSize=${this.mediaSize}`);
         }
 
         byteToSize(byte) {
