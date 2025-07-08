@@ -177,27 +177,27 @@
                 <button id="download" ${buttonStyle} data-i18n="downloadCapturedData">下载已捕获的数据</button>
                 <button id="clean" ${buttonStyle} data-i18n="deleteCapturedData">删除已捕获数据</button>
                 <div><button id="hide" ${buttonStyle} data-i18n="hide">隐藏</button><button id="close" ${buttonStyle} data-i18n="close">关闭</button></div>
-                <label><input type="checkbox" id="autoDown" ${localStorage.getItem("CatCatchCatch_autoDown") || ""} ${checkboxStyle}><span data-i18n="automaticDownload"></span></label>
-                <label><input type="radio" name="mergeOptions" id="ffmpegMerge" ${localStorage.getItem("CatCatchCatch_ffmpegMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="ffmpeg"><span data-i18n="ffmpeg"></span></label>
-                <label><input type="radio" name="mergeOptions" id="localMerge" ${localStorage.getItem("CatCatchCatch_localMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="local"><span data-i18n="localMergeLabel"></span></label>
-                <label><input type="radio" name="mergeOptions" id="noMerge" ${localStorage.getItem("CatCatchCatch_noMerge") === "checked" || (!localStorage.getItem("CatCatchCatch_ffmpegMerge") && !localStorage.getItem("CatCatchCatch_localMerge")) ? "checked" : ""} ${checkboxStyle} value="none"><span data-i18n="downloadSeparateFiles"></span></label>
-                <label><input type="checkbox" id="autoToBuffered" ${checkboxStyle}><span data-i18n="autoToBuffered"></span></label>
-                <label><input type="checkbox" id="checkHead" ${checkboxStyle}><span data-i18n="cleanupRedundantHeaderData"></span></label>
-                <label><input type="checkbox" id="completeClearCache" ${localStorage.getItem("CatCatchCatch_completeClearCache") || ""} ${checkboxStyle}><span data-i18n="clearDataAfterDownload"></span></label>
+                <label><input type="checkbox" id="autoDown" ${localStorage.getItem("CatCatchCatch_autoDown") || ""} ${checkboxStyle}><span data-i18n="automaticDownload">Automatic download</span></label>
+                <label><input type="radio" name="mergeOptions" id="ffmpegMerge" ${localStorage.getItem("CatCatchCatch_ffmpegMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="ffmpeg"><span data-i18n="ffmpeg">Use ffmpeg for merging</span></label>
+                <label><input type="radio" name="mergeOptions" id="localMerge" ${localStorage.getItem("CatCatchCatch_localMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="local"><span data-i18n="localMergeLabel">Merge Locally (MP4Box)</span></label>
+                <label><input type="radio" name="mergeOptions" id="noMerge" ${localStorage.getItem("CatCatchCatch_noMerge") === "checked" || (!localStorage.getItem("CatCatchCatch_ffmpegMerge") && !localStorage.getItem("CatCatchCatch_localMerge")) ? "checked" : ""} ${checkboxStyle} value="none"><span data-i18n="downloadSeparateFiles">Download separate files</span></label>
+                <label><input type="checkbox" id="autoToBuffered" ${checkboxStyle}><span data-i18n="autoToBuffered">Auto jump to buffered end</span></label>
+                <label><input type="checkbox" id="checkHead" ${checkboxStyle}><span data-i18n="cleanupRedundantHeaderData">Cleanup redundant header data</span></label>
+                <label><input type="checkbox" id="completeClearCache" ${localStorage.getItem("CatCatchCatch_completeClearCache") || ""} ${checkboxStyle}><span data-i18n="clearDataAfterDownload">Clear data after download</span></label>
                 <details>
-                    <summary data-i18n="fileName" id="summary"></summary>
-                    <div style="font-weight:bold;"><span data-i18n="fileName"></span>: </div><div id="fileName"></div>
-                    <div style="font-weight:bold;"><span data-i18n="selector"></span>: </div><div id="selector">Null</div>
-                    <div style="font-weight:bold;"><span data-i18n="regular"></span>: </div><div id="regular">Null</div>
-                    <button id="setSelector" ${buttonStyle} data-i18n="usingSelector"></button>
-                    <button id="setRegular" ${buttonStyle} data-i18n="usingRegular"></button>
-                    <button id="setFileName" ${buttonStyle} data-i18n="customize"></button>
+                    <summary data-i18n="fileName" id="summary">File Name Settings</summary>
+                    <div style="font-weight:bold;"><span data-i18n="fileName">File Name</span>: </div><div id="fileName"></div>
+                    <div style="font-weight:bold;"><span data-i18n="selector">Selector</span>: </div><div id="selector">Null</div>
+                    <div style="font-weight:bold;"><span data-i18n="regular">Regex</span>: </div><div id="regular">Null</div>
+                    <button id="setSelector" ${buttonStyle} data-i18n="usingSelector">Use Selector</button>
+                    <button id="setRegular" ${buttonStyle} data-i18n="usingRegular">Use Regex</button>
+                    <button id="setFileName" ${buttonStyle} data-i18n="customize">Customize</button>
                 </details>
                 <details>
-                <summary data-i18n="test">test</summary>
-                    <button id="test" ${buttonStyle} data-i18n="test">test</button>
-                    <button id="restart" ${buttonStyle} data-i18n="capturedBeginning"></button>
-                    <label><input type="checkbox" id="restartAlways" ${localStorage.getItem("CatCatchCatch_restart") || ""} ${checkboxStyle}><span data-i18n="alwaysCapturedBeginning"></span>(beta)</label>
+                <summary data-i18n="test">Test</summary>
+                    <button id="test" ${buttonStyle} data-i18n="test">Test</button>
+                    <button id="restart" ${buttonStyle} data-i18n="capturedBeginning">Capture from Beginning</button>
+                    <label><input type="checkbox" id="restartAlways" ${localStorage.getItem("CatCatchCatch_restart") || ""} ${checkboxStyle}><span data-i18n="alwaysCapturedBeginning">Always Capture from Beginning</span>(beta)</label>
                 </details>
             </div>`;
             this.catCatch.style = `
