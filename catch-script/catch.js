@@ -1027,22 +1027,28 @@
             if (this.isComplete) {
                 this.catchMedia = [];
                 this.isComplete = false;
-                // لا تقم بتحديث النصائح هنا لأنها قد تكون "اكتمل التنزيل"
+                // this.currentCaptureSessionId = null; // معطل مؤقتًا - لا يزال معطلًا
                 console.log("CatCatch: Cache cleared because capture was complete.");
                 return;
             }
 
-            // السلوك القديم: الاحتفاظ بالجزء الأول من كل مخزن مؤقت إذا لم يكن الالتقاط مكتملاً ولم يتم فرض المسح
-            // هذا الجزء قد يحتاج إلى إعادة نظر. في الوقت الحالي، إذا لم يتم فرض المسح ولم يكتمل الالتقاط،
-            // قد يكون من الأفضل عدم مسح أي شيء أو مسح كل شيء.
-            // دعنا نلتزم بالمسح الكامل في معظم الحالات لتجنب دمج البيانات الخاطئة.
-            // إذا لم يتم فرض المسح ولم يكتمل، فمن المحتمل أننا لا نريد مسح أي شيء حتى الآن.
-            // ومع ذلك، لمنع دمج البيانات الخاطئة، قد يكون من الأفضل مسحها عند بدء التقاط جديد.
-            // تم نقل منطق المسح عند بدء التقاط جديد إلى addSourceBuffer.
-            console.log("CatCatch: ClearCache called but not forceClearAll and not isComplete. Current mediaSize:", this.mediaSize);
-            // لتجنب السلوك غير المتوقع، إذا لم يكن forceClearAll ولم يكن isComplete،
-            // دعنا لا نعدل mediaSize أو catchMedia هنا بشكل كبير.
-            // سيتم التعامل مع المسح الضروري في addSourceBuffer.
+            // *** إعادة السلوك الأصلي للمسح الجزئي ***
+            // هذا يُستدعى عندما لا يكون forceClearAll صحيحًا و isComplete خاطئًا
+            // (على سبيل المثال، عند استدعاء clearCache() من handleRestart أو resetVideoPlayback)
+            console.log("CatCatch: ClearCache called without forceClearAll and capture not complete. Performing partial clear (keeping first buffer of each stream).");
+            for (let key in this.catchMedia) {
+                const media = this.catchMedia[key];
+                if (media && media.bufferList && media.bufferList.length > 0) {
+                    const firstBuffer = media.bufferList[0];
+                    media.bufferList = [firstBuffer]; // الاحتفاظ بالجزء الأول فقط
+                    this.mediaSize += firstBuffer ? (firstBuffer.byteLength || 0) : 0;
+                } else if (media) { // إذا كان media موجودًا ولكن bufferList فارغ أو غير موجود
+                    media.bufferList = []; // تأكد من أنه مصفوفة فارغة
+                }
+            }
+            // لا نغير isComplete هنا في حالة المسح الجزئي
+            // ولا نغير currentCaptureSessionId هنا
+            // يتم تحديث الواجهة (tips) بواسطة الدوال المستدعية إذا لزم الأمر
         }
 
         byteToSize(byte) {
