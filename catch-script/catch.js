@@ -1,11 +1,15 @@
+// بداية ملف catch-script/catch.js
+console.log("CatCatch: catch.js script starting to load/execute.");
+
 (function () {
+    console.log("CatCatch: IIFE in catch.js executed.");
+
     class CatCatcher {
         constructor() {
+            console.log("CatCatch: Constructor called.");
             this.settings = { watchedOnCaptureComplete: true, watchedOnTabClose: false, watchedOnNextVideo: false }; // Defaults, will be updated
             this.tabId = null;
             this.boundMessageHandler = this.handleBackgroundMessage.bind(this);
-
-            console.log("CatCatch: Constructor - Initializing...");
 
             // 初始化属性
             this.enable = true;  // 捕获开关
@@ -29,22 +33,37 @@
                     }
                 }
             }
+            console.log("CatCatch: Constructor - Language initialized:", this.language);
 
             // 初始化组件
             // 删除iframe sandbox属性 避免 issues #576
             this.setupIframeProcessing();
+            console.log("CatCatch: Constructor - setupIframeProcessing called.");
 
             // 初始化 Trusted Types
             this.initTrustedTypes();
+            console.log("CatCatch: Constructor - initTrustedTypes called.");
 
             // 创建和设置UI
-            this.createUI();
+            try {
+                this.createUI();
+                console.log("CatCatch: Constructor - createUI() call completed.");
+            } catch (e) {
+                console.error("CatCatch: CRITICAL - Error calling createUI() from constructor:", e);
+            }
 
             // 代理MediaSource方法
-            this.proxyMediaSourceMethods();
+            try {
+                this.proxyMediaSourceMethods();
+                console.log("CatCatch: Constructor - proxyMediaSourceMethods() call completed.");
+            } catch (e) {
+                console.error("CatCatch: CRITICAL - Error calling proxyMediaSourceMethods() from constructor:", e);
+            }
 
             this.getSettingsAndTabId();
+            console.log("CatCatch: Constructor - getSettingsAndTabId called.");
             window.addEventListener("message", this.boundMessageHandler);
+            console.log("CatCatch: Constructor - event listener added. Initialization finished.");
         }
 
         getSettingsAndTabId() {
@@ -163,6 +182,7 @@
          * 创建UI元素
          */
         createUI() {
+            console.log("CatCatch: createUI() called.");
             const buttonStyle = 'style="border:solid 1px #000;margin:2px;padding:2px;background:#fff;border-radius:4px;border:solid 1px #c7c7c780;color:#000;"';
             const checkboxStyle = 'style="-webkit-appearance: auto;"';
 
@@ -224,8 +244,13 @@
             this.catCatch.style.opacity = '0.5';
             // *** END NEW CODE ***
 
-            // 创建 Shadow DOM
-            this.createShadowRoot();
+            console.log("CatCatch: createUI() - HTML structure created. Attempting to create shadow root.");
+            try {
+                this.createShadowRoot();
+                console.log("CatCatch: createUI() - createShadowRoot() call completed.");
+            } catch (e) {
+                console.error("CatCatch: CRITICAL - Error calling createShadowRoot() from createUI():", e);
+            }
 
             // 初始化UI元素引用
             this.tips = this.catCatch.querySelector("#tips");
@@ -234,21 +259,27 @@
             this.regular = this.catCatch.querySelector("#regular");
 
             if (!this.tips || !this.fileName || !this.selector || !this.regular) {
-                console.error("UI元素初始化失败，找不到必要的DOM元素");
+                console.error("CatCatch: UI elements initialization failed, necessary DOM elements not found.");
+            } else {
+                console.log("CatCatch: createUI - UI elements (tips, fileName, etc.) successfully referenced.");
             }
 
             // 初始化显示
             this.tips.innerHTML = this.i18n("waiting", "等待视频播放");
             this.selector.innerHTML = localStorage.getItem("CatCatchCatch_selector") ?? "Null";
             this.regular.innerHTML = localStorage.getItem("CatCatchCatch_regular") ?? "Null";
+            console.log("CatCatch: createUI - Initial text for tips, selector, regular set.");
 
             // 绑定事件
             this.bindEvents();
+            console.log("CatCatch: createUI - bindEvents() called.");
 
             // 自动从头捕获设置
             if (localStorage.getItem("CatCatchCatch_restart") == "checked") {
                 this.setupAutoRestart();
+                console.log("CatCatch: createUI - setupAutoRestart() called due to localStorage setting.");
             }
+            console.log("CatCatch: createUI() - UI setup finished.");
         }
 
         /**
@@ -256,8 +287,8 @@
          * 解决 issues #693 安全使用attachShadow 从iframe中获取原生方法
          */
         createShadowRoot() {
+            console.log("CatCatch: createShadowRoot() called.");
             try {
-                // 解决 issues #693 安全使用attachShadow 从iframe中获取原生方法
                 const createSecureShadowRoot = (element, mode = 'closed') => {
                     const getPristineAttachShadow = () => {
                         try {
@@ -266,10 +297,14 @@
                             parentNode.appendChild(iframe);
                             const pristineMethod = iframe.contentDocument.createElement('div').attachShadow;
                             iframe.remove();
-                            if (pristineMethod) return pristineMethod;
+                            if (pristineMethod) {
+                                console.log("CatCatch: createShadowRoot - Pristine attachShadow obtained from iframe.");
+                                return pristineMethod;
+                            }
                         } catch (e) {
-                            console.log("获取原生attachShadow方法失败:", e);
+                            console.warn("CatCatch: createShadowRoot - Failed to get pristine attachShadow:", e);
                         }
+                        console.log("CatCatch: createShadowRoot - Using Element.prototype.attachShadow.");
                         return Element.prototype.attachShadow;
                     };
 
@@ -277,35 +312,49 @@
                         ? Element.prototype.attachShadow.bind(element)
                         : getPristineAttachShadow().bind(element);
 
+                    console.log("CatCatch: createShadowRoot - Secure shadow root attempt.");
                     try {
                         return executor({ mode });
                     } catch (e) {
-                        console.error('Shadow DOM 创建失败:', e);
-                        // 应急处理：降级方案
-                        return document.createElement('div');
+                        console.error('CatCatch: createShadowRoot - Shadow DOM creation failed in secure attempt:', e);
+                        console.log("CatCatch: createShadowRoot - Falling back to simple div for shadow root.");
+                        return document.createElement('div'); // Fallback to a simple div if secure creation fails
                     }
                 };
-
-                // 创建 Shadow DOM 放入CatCatch
+                console.log("CatCatch: createShadowRoot() - About to create shadow div.");
                 const divShadow = document.createElement('div');
                 const shadowRoot = createSecureShadowRoot(divShadow);
+                console.log("CatCatch: createShadowRoot() - Shadow root object created:", shadowRoot ? shadowRoot.toString() : 'null');
                 shadowRoot.appendChild(this.catCatch);
+                console.log("CatCatch: createShadowRoot() - catCatch appended to shadow root.");
 
-                // 页面插入Shadow DOM
                 const htmlElement = document.getElementsByTagName('html')[0];
                 if (htmlElement) {
                     htmlElement.appendChild(divShadow);
+                    console.log("CatCatch: createShadowRoot() - Shadow DOM appended to HTML element.");
                 } else {
-                    document.appendChild(divShadow);
+                    document.appendChild(divShadow); // أقل احتمالاً
+                    console.warn("CatCatch: createShadowRoot() - HTML element not found, appended to document directly.");
                 }
+                 if (this.catCatch.parentElement || (this.catCatch.getRootNode && this.catCatch.getRootNode().host)) {
+                    console.log("CatCatch: createShadowRoot() - UI successfully appended to parent/host.");
+                } else {
+                    console.warn("CatCatch: createShadowRoot() - UI may not have been appended to the DOM correctly after shadow root creation.");
+                }
+
             } catch (error) {
-                console.error("创建Shadow DOM失败:", error);
-                // 降级方案：直接添加到body
+                console.error("CatCatch: CRITICAL - Outer error in createShadowRoot():", error);
                 try {
+                    console.warn("CatCatch: createShadowRoot() - Attempting fallback: appending directly to body.");
                     const body = document.body || document.documentElement;
                     body.appendChild(this.catCatch);
+                    if (this.catCatch.parentElement) {
+                        console.log("CatCatch: createShadowRoot() - UI fallback append to parent:", this.catCatch.parentElement.tagName);
+                    } else {
+                        console.warn("CatCatch: createShadowRoot() - UI fallback append also seems to have failed.");
+                    }
                 } catch (e) {
-                    console.error("降级添加UI也失败:", e);
+                    console.error("CatCatch: CRITICAL - Fallback append UI also failed:", e);
                 }
             }
         }
@@ -1161,5 +1210,13 @@
     }
 
     // 创建并启动CatCatcher实例
-    const catCatcher = new CatCatcher();
+    try {
+        console.log("CatCatch: Attempting to instantiate CatCatcher.");
+        const catCatcher = new CatCatcher(); // هذا السطر يجب أن يكون موجودًا بالفعل
+        console.log("CatCatch: CatCatcher instance created successfully.");
+    } catch (e) {
+        console.error("CatCatch: CRITICAL - Error instantiating CatCatcher:", e);
+    }
+
 })();
+// نهاية الملف
