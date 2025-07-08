@@ -781,15 +781,25 @@
               </label>
             </div>
           </div>
+          <!-- خيارات وضع الالتقاط والتنزيل -->
           <div class="item">
-            <div data-i18n="mergeCapturedAVLabel"></div>
-            <div class="switch">
-              <label class="switchLabel switchRadius">
-                <input type="checkbox" save="click" id="mergeCapturedAV" class="switchInput" />
-                <span class="switchRound switchRadius"><em class="switchRoundBtn switchRadius"></em></span>
-              </label>
-            </div>
+            <div data-i18n="captureDownloadModeLabel">وضع التقاط وتنزيل الفيديو/الصوت:</div>
           </div>
+          <div class="item" style="flex-direction: column; align-items: flex-start;">
+            <label style="margin-bottom: 5px;">
+              <input type="radio" name="captureDownloadMode" value="ffmpeg" save="click" id="captureModeFfmpeg" class="radioInput">
+              <span data-i18n="captureModeFfmpegLabel">الدمج باستخدام FFMPEG (الخدمة الخارجية)</span>
+            </label>
+            <label style="margin-bottom: 5px;">
+              <input type="radio" name="captureDownloadMode" value="mp4box" save="click" id="captureModeMp4box" class="radioInput">
+              <span data-i18n="captureModeMp4boxLabel">الدمج باستخدام MP4Box (محلي)</span>
+            </label>
+            <label>
+              <input type="radio" name="captureDownloadMode" value="separate" save="click" id="captureModeSeparate" class="radioInput">
+              <span data-i18n="captureModeSeparateLabel">تنزيل الملفات بشكل منفصل (بدون دمج)</span>
+            </label>
+          </div>
+          <!-- نهاية خيارات وضع الالتقاط والتنزيل -->
         </div>
         <div class="flex-end">
           <button type="button" class="resetOption" data-i18n="resetSettings"></button>

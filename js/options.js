@@ -41,6 +41,10 @@ chrome.storage.sync.get(G.OptionLists, function (items) {
                 $(`#${key}`).val(items[key]);
             }
         }
+        // تحديد زر الراديو لـ captureDownloadMode
+        if (items.captureDownloadMode) {
+            $(`input[name="captureDownloadMode"][value="${items.captureDownloadMode}"]`).prop("checked", true);
+        }
     }, 100);
 });
 
@@ -170,7 +174,12 @@ $("[save='input']").on("input", function () {
 });
 // 调试模式 使用网页标题做文件名 使用PotPlayer预览 显示网站图标 刷新自动清理
 $("[save='click']").bind("click", function () {
-    chrome.storage.sync.set({ [this.id]: $(this).prop('checked') });
+    // معالجة خاصة لأزرار الراديو
+    if (this.name === "captureDownloadMode") {
+        chrome.storage.sync.set({ captureDownloadMode: this.value });
+    } else { // المعالجة الحالية للمربعات checkbox
+        chrome.storage.sync.set({ [this.id]: $(this).prop('checked') });
+    }
 });
 // [save='select'] 元素 储存
 $("[save='select']").on("change", function () {
