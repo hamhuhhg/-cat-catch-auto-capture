@@ -15,7 +15,7 @@
             this.catchMedia = [];   // 捕获的媒体数据
             this.mediaSize = 0; // 捕获的媒体数据大小
             this.setFileName = null;    // 文件名
-            this.currentCaptureSessionId = null; // معرف جلسة الالتقاط الحالية
+            // this.currentCaptureSessionId = null; // معطل مؤقتًا للتشخيص
 
             // 移动面板相关属性
             this.x = 0;
@@ -700,16 +700,16 @@
                         // أعد تعيين isComplete إلى false وقم بإنشاء معرف جلسة جديد.
                         if (this.catchMedia.length === 0 || this.isComplete) {
                             this.isComplete = false; // تأكد من أنه false عند بدء التقاط جديد
-                            this.currentCaptureSessionId = Date.now().toString() + Math.random().toString(36).substring(2, 7);
-                            console.log("CatCatch: New capture session started with ID:", this.currentCaptureSessionId);
+                            // this.currentCaptureSessionId = Date.now().toString() + Math.random().toString(36).substring(2, 7); // معطل مؤقتًا
+                            // console.log("CatCatch: New capture session started with ID:", this.currentCaptureSessionId);
                             if (this.isComplete) this.clearCache(true); // امسح إذا كان الالتقاط السابق قد اكتمل بالفعل
                         }
 
 
                         this.catchMedia.push({
                             mimeType: argumentsList[0],
-                            bufferList: [],
-                            sessionId: this.currentCaptureSessionId
+                            bufferList: []
+                            // sessionId: this.currentCaptureSessionId // معطل مؤقتًا
                         });
                         const index = this.catchMedia.length - 1;
 
@@ -824,19 +824,11 @@
          * 下载捕获的数据
          */
         catchDownload() {
-            const activeMedia = this.catchMedia.filter(item => item.sessionId === this.currentCaptureSessionId);
+            // استخدام this.catchMedia مباشرة لأن sessionId معطل مؤقتًا
+            const activeMedia = this.catchMedia;
 
             if (activeMedia.length === 0) {
-                alert(this.i18n("noData", "لا توجد بيانات ملتقطة للجلسة الحالية"));
-                // إذا لم يكن هناك معرف جلسة حالي، ولكن هناك وسائط، فربما تكون هذه حالة قديمة
-                // أو أن المستخدم يحاول التنزيل قبل بدء أي التقاط.
-                // إذا كان this.catchMedia يحتوي على بيانات ولكن activeMedia فارغ، فهذا يعني أن sessionId لا يتطابق.
-                if (this.catchMedia.length > 0 && !this.currentCaptureSessionId) {
-                    console.warn("CatCatch: Attempting to download with no active session ID, but catchMedia is not empty. This might be old data or an issue.");
-                    // كحل بديل، يمكننا محاولة استخدام this.catchMedia بالكامل، ولكن هذا يعيدنا إلى المشكلة الأصلية.
-                    // من الأفضل إعلام المستخدم.
-                    alert(this.i18n("noActiveSession", "لا توجد جلسة التقاط نشطة. يرجى بدء تشغيل الفيديو أولاً."));
-                }
+                alert(this.i18n("noData", "لا توجد بيانات ملتقطة"));
                 return;
             }
 
@@ -845,7 +837,7 @@
                 let userConfirmedHeadChoice = false;
                 let hasValidStreamsForMerging = true;
 
-                for (let key in activeMedia) { // استخدام activeMedia المصفاة
+                for (let key in activeMedia) {
                     if (!activeMedia[key]?.bufferList || activeMedia[key].bufferList.length <= 1) continue;
                     let lastHeaderIndex = -1;
                     for (let i = 0; i < activeMedia[key].bufferList.length; i++) {
@@ -872,7 +864,7 @@
                 }
                 if (!hasValidStreamsForMerging && this.captureDownloadMode !== "separate") {
                     console.warn("CatCatch: Missing headers in some streams, forcing separate download for this attempt.");
-                    this.downloadDirect(activeMedia); // استخدام activeMedia
+                    this.downloadDirect(activeMedia);
                     if (this.isComplete || localStorage.getItem("CatCatchCatch_completeClearCache") === "checked") {
                         this.clearCache(true);
                     }
@@ -884,16 +876,16 @@
             switch (this.captureDownloadMode) {
                 case "ffmpeg":
                     if (activeMedia.length >= 2) {
-                        this.downloadWithFFmpeg(activeMedia); // استخدام activeMedia
+                        this.downloadWithFFmpeg(activeMedia);
                     } else {
                         console.log("CatCatch: FFMPEG merge selected, but less than 2 media streams found. Downloading directly.");
-                        this.downloadDirect(activeMedia); // استخدام activeMedia
+                        this.downloadDirect(activeMedia);
                     }
                     break;
                 case "mp4box":
                     let videoStream = null;
                     let audioStream = null;
-                    for (const stream of activeMedia) { // استخدام activeMedia
+                    for (const stream of activeMedia) {
                         if (stream.mimeType && stream.mimeType.startsWith('video/') && !videoStream) {
                             videoStream = stream;
                         } else if (stream.mimeType && stream.mimeType.startsWith('audio/') && !audioStream) {
@@ -913,16 +905,16 @@
                             filenameHint: title,
                             tabId: this.tabId
                         }, "*");
-                        console.log("CatCatch: MP4Box merge request sent for session:", this.currentCaptureSessionId);
+                        console.log("CatCatch: MP4Box merge request sent."); // تمت إزالة SessionId من الرسالة
                         this.clearCache(true);
                     } else {
                         console.log("CatCatch: MP4Box merge selected, but a clear video/audio pair was not found. Downloading directly.");
-                        this.downloadDirect(activeMedia); // استخدام activeMedia
+                        this.downloadDirect(activeMedia);
                     }
                     break;
                 case "separate":
                 default:
-                    this.downloadDirect(activeMedia); // استخدام activeMedia
+                    this.downloadDirect(activeMedia);
                     break;
             }
 
@@ -940,9 +932,9 @@
          * 使用FFmpeg合并下载捕获的数据
          * @param {Array} mediaToDownload - الوسائط التي سيتم دمجها وتنزيلها
          */
-        downloadWithFFmpeg(mediaToDownload) { // قبول الوسيط
+        downloadWithFFmpeg(mediaToDownload) {
             const media = [];
-            for (let item of mediaToDownload) { // استخدام الوسيط
+            for (let item of mediaToDownload) {
                 if (!item || !item.bufferList || item.bufferList.length === 0) continue;
                 const mime = (item.mimeType && item.mimeType.split(';')[0]) || 'video/mp4';
                 const fileBlob = new Blob(item.bufferList, { type: mime });
@@ -950,11 +942,11 @@
                 media.push({
                     data: (typeof chrome == "object") ? URL.createObjectURL(fileBlob) : fileBlob,
                     type: type,
-                    originalMimeType: item.mimeType // قد يكون مفيدًا لـ ffmpeg page
+                    originalMimeType: item.mimeType
                 });
             }
 
-            if (media.length === 0) { // يجب أن يكون هذا نادرًا إذا تم استدعاؤه بـ activeMedia.length >= 2
+            if (media.length === 0) {
                 alert(this.i18n("noData", "لا توجد بيانات صالحة لإرسالها إلى FFMPEG"));
                 return;
             }
@@ -966,10 +958,10 @@
                 files: media,
                 title: title,
                 output: title,
-                quantity: media.length,
-                sessionId: this.currentCaptureSessionId // إرسال معرف الجلسة إذا لزم الأمر
+                quantity: media.length
+                // sessionId: this.currentCaptureSessionId // معطل مؤقتًا
             });
-            console.log("CatCatch: Data sent to FFmpeg for session:", this.currentCaptureSessionId);
+            console.log("CatCatch: Data sent to FFmpeg."); // تمت إزالة SessionId من الرسالة
             this.clearCache(true);
         }
 
@@ -977,17 +969,16 @@
          * 直接下载捕获的数据
          * @param {Array} mediaToDownload - الوسائط التي سيتم تنزيلها
          */
-        downloadDirect(mediaToDownload) { // قبول الوسيط
+        downloadDirect(mediaToDownload) {
             const a = document.createElement('a');
             let downloadCount = 0;
 
-            for (let item of mediaToDownload) { // استخدام الوسيط
+            for (let item of mediaToDownload) {
                 if (!item || !item.bufferList || item.bufferList.length === 0) continue;
                 const mime = (item.mimeType && item.mimeType.split(';')[0]) || 'video/mp4';
-                // تحديد الامتداد بشكل أفضل
                 let ext = mime.split('/')[1] || 'bin';
                 if (ext.includes('mp4')) ext = 'mp4';
-                else if (ext.includes('mpeg')) ext = 'mp3'; // MPEG audio
+                else if (ext.includes('mpeg')) ext = 'mp3';
                 else if (ext.includes('webm')) ext = 'webm';
                 else if (ext.includes('ogg')) ext = 'ogg';
 
@@ -1021,14 +1012,14 @@
                 this.catchMedia = [];
                 this.mediaSize = 0;
                 this.isComplete = false;
-                this.currentCaptureSessionId = null; // إعادة تعيين معرف الجلسة أيضًا
+                // this.currentCaptureSessionId = null; // معطل مؤقتًا
                 if (this.tips) { // التأكد من أن عنصر النصائح موجود
                     this.tips.innerHTML = this.i18n("waiting", "انتظار تشغيل الفيديو");
                 }
                  // إعادة تعيين اسم الملف أيضًا إذا لزم الأمر، أو اتركه كما هو إذا كان يجب أن يستمر
                 // this.setFileName = null;
                 // this.getFileName();
-                console.log("CatCatch: Cache cleared forcefully. Session ID reset.");
+                console.log("CatCatch: Cache cleared forcefully."); // تمت إزالة Session ID reset من الرسالة
                 return;
             }
 
