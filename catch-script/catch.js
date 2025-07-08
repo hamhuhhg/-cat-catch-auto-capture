@@ -195,9 +195,9 @@ console.log("CatCatch: catch.js script starting to load/execute.");
             this.catCatch.innerHTML = `<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAKlBMVEUAAADLlROxbBlRAD16GS5oAjWWQiOCIytgADidUx/95gHqwwTx0gDZqwT6kfLuAAAACnRSTlMA/vUejV7kuzi8za0PswAAANpJREFUGNNjwA1YSxkYTEqhnKZLLi6F1w0gnKA1shdvHYNxdq1atWobjLMKCOAyC3etlVrUAOH4HtNZmLgoAMKpXX37zO1FwcZAwMDguGq1zKpFmTNnzqx0Bpp2WvrU7ttn9py+I8JgLn1R8Pad22vurNkjwsBReHv33junzuyRnOnMwNCSeFH27K5dq1SNgcZxFMnuWrNq1W5VkNntihdv7ToteGcT0C7mIkE1qbWCYjJnM4CqEoWKdoslChXuUgXJqIcLebiphSgCZRhaPDhcDFhdmUMCGIgEAFA+Uc02aZg9AAAAAElFTkSuQmCC" style="-webkit-user-drag: none;width: 20px;">
             <div id="catCatch" style="${style}">
                 <div id="tips"></div>
-                <button id="download" ${buttonStyle} data-i18n="downloadCapturedData">下载已捕获的数据</button>
-                <button id="clean" ${buttonStyle} data-i18n="deleteCapturedData">删除已捕获数据</button>
-                <div><button id="hide" ${buttonStyle} data-i18n="hide">隐藏</button><button id="close" ${buttonStyle} data-i18n="close">关闭</button></div>
+                <button id="download" ${buttonStyle} data-i18n="downloadCapturedData">Download captured data</button>
+                <button id="clean" ${buttonStyle} data-i18n="deleteCapturedData">Delete captured data</button>
+                <div><button id="hide" ${buttonStyle} data-i18n="hide">Hide</button><button id="close" ${buttonStyle} data-i18n="close">Close</button></div>
                 <label><input type="checkbox" id="autoDown" ${localStorage.getItem("CatCatchCatch_autoDown") || ""} ${checkboxStyle}><span data-i18n="automaticDownload">Automatic download</span></label>
                 <label><input type="radio" name="mergeOptions" id="ffmpegMerge" ${localStorage.getItem("CatCatchCatch_ffmpegMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="ffmpeg"><span data-i18n="ffmpeg">Use ffmpeg for merging</span></label>
                 <label><input type="radio" name="mergeOptions" id="localMerge" ${localStorage.getItem("CatCatchCatch_localMerge") === "checked" ? "checked" : ""} ${checkboxStyle} value="local"><span data-i18n="localMergeLabel">Merge Locally (MP4Box)</span></label>
@@ -565,30 +565,23 @@ console.log("CatCatch: catch.js script starting to load/execute.");
          * @param {MouseEvent} event 
          */
         handleRestart(event) {
-            const checkHead = this.catCatch.querySelector("#checkHead");
-            if (checkHead) checkHead.checked = true;
-
-            // ----- بداية التعديل المقترح -----
             console.log("CatCatch: handleRestart called.");
-            const checkHead = this.catCatch.querySelector("#checkHead");
+            const checkHead = this.catCatch.querySelector("#checkHead"); // الإبقاء على التعريف الأول فقط
             if (checkHead) checkHead.checked = true;
 
-            // ----- بداية التعديل المقترح -----
             console.log("CatCatch: Restarting capture. Clearing all media.");
-            this.catchMedia = []; // مسح كامل للبيانات الملتقطة
+            // تم إزالة التعريف المكرر لـ checkHead من هنا
+
+            this.catchMedia = [];
             this.mediaSize = 0;
-            this.isComplete = false; // إعادة تعيين حالة الاكتمال
+            this.isComplete = false;
             if (this.tips) {
                 this.tips.innerHTML = this.i18n("waiting", "等待视频播放");
             }
             console.log(`CatCatch: handleRestart - State after reset: isComplete=${this.isComplete}, catchMedia.length=${this.catchMedia.length}, mediaSize=${this.mediaSize}`);
-            // ----- نهاية التعديل المقترح -----
-
-            // clearCache() الأصلي قد لا يمسح كل شيء، لذا قمنا بالمسح المباشر أعلاه.
-            // this.clearCache(); // يمكن إبقاؤه إذا كان يقوم بعمليات تنظيف أخرى ضرورية
 
             document.querySelectorAll("video").forEach((element) => {
-                try { // إضافة try-catch هنا
+                try {
                     element.currentTime = 0;
                     element.play();
                 } catch (e) {
@@ -1207,9 +1200,8 @@ console.log("CatCatch: catch.js script starting to load/execute.");
                 }[m];
             });
         }
-    }
+    } // نهاية Class CatCatcher
 
-    // 创建并启动CatCatcher实例
     try {
         console.log("CatCatch: Attempting to instantiate CatCatcher.");
         const catCatcher = new CatCatcher(); // هذا السطر يجب أن يكون موجودًا بالفعل
