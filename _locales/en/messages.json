@@ -946,5 +946,107 @@
   },
   "mergeCapturedAVInTabLabel": {
     "message": "Merge A/V (Local)"
+  },
+  "waiting": {
+    "message": "Waiting for video to play"
+  },
+  "downloadCapturedData": {
+    "message": "Download captured data"
+  },
+  "deleteCapturedData": {
+    "message": "Delete captured data"
+  },
+  "hide": {
+    "message": "Hide"
+  },
+  "automaticDownload": {
+    "message": "Automatic download upon capture completion"
+  },
+  "ffmpeg": {
+    "message": "Use ffmpeg for merging"
+  },
+  "autoToBuffered": {
+    "message": "Automatically jump to buffered end"
+  },
+  "cleanupRedundantHeaderData": {
+    "message": "Cleanup redundant header data"
+  },
+  "clearDataAfterDownload": {
+    "message": "Clear data after download completion"
+  },
+  "fileName": {
+    "message": "File Name"
+  },
+  "selector": {
+    "message": "Selector"
+  },
+  "regular": {
+    "message": "Regular Expression"
+  },
+  "usingSelector": {
+    "message": "Extract with Selector"
+  },
+  "usingRegular": {
+    "message": "Extract with Regular Expression"
+  },
+  "customize": {
+    "message": "Customize"
+  },
+  "capturedBeginning": {
+    "message": "Capture from Beginning"
+  },
+  "alwaysCapturedBeginning": {
+    "message": "Always Capture from Beginning"
+  },
+  "clearCacheConfirmation": {
+    "message": "Confirm clear cache?"
+  },
+  "cleanupCompleted": {
+    "message": "Cleanup completed!"
+  },
+  "clearCache": {
+    "message": "Clear Cache"
+  },
+  "downloadConfirmation": {
+    "message": "Premature download may cause data corruption. Confirm?"
+  },
+  "downloadError": {
+    "message": "Error during download, please check console"
+  },
+  "closeConfirmation": {
+    "message": "Confirm close?"
+  },
+  "fileNameError": {
+    "message": "Filename error!"
+  },
+  "capturingData": {
+    "message": "Capturing data..."
+  },
+  "captureCompleted": {
+    "message": "Capture completed"
+  },
+  "noHead": {
+    "message": "No video header data detected, please use local tool for processing"
+  },
+  "headData": {
+    "message": "Redundant header data detected, clear it?"
+  },
+  "downloadCompleted": {
+    "message": "Download completed..."
+  },
+  "notSet": {
+    "message": "Not set"
+  },
+  "notEnoughDataForMerge": {
+    "message": "Not enough data (video and audio) for local merge."
+  },
+  "videoAndAudioNeededForMerge": {
+    "message": "At least one video and one audio stream are required for local merge."
+  },
+  "notEnoughValidStreams": {
+    "message": "Not enough valid streams for merging."
+  },
+  "mergeRequestSent": {
+    "message": "Local merge request sent..."
   }
 }

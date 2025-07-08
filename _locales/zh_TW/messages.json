@@ -934,5 +934,107 @@
   },
   "alwaysSearch": {
     "message": "始終開啟深度搜索"
+  },
+  "waiting": {
+    "message": "等待影片播放"
+  },
+  "downloadCapturedData": {
+    "message": "下載已擷取的資料"
+  },
+  "deleteCapturedData": {
+    "message": "刪除已擷取的資料"
+  },
+  "hide": {
+    "message": "隱藏"
+  },
+  "automaticDownload": {
+    "message": "擷取完成後自動下載"
+  },
+  "ffmpeg": {
+    "message": "使用 ffmpeg 合併"
+  },
+  "autoToBuffered": {
+    "message": "自動跳轉到緩衝區尾端"
+  },
+  "cleanupRedundantHeaderData": {
+    "message": "清理多餘的標頭資料"
+  },
+  "clearDataAfterDownload": {
+    "message": "下載完成後清除資料"
+  },
+  "fileName": {
+    "message": "檔案名稱設定"
+  },
+  "selector": {
+    "message": "表達式"
+  },
+  "regular": {
+    "message": "正規表示法"
+  },
+  "usingSelector": {
+    "message": "使用表達式提取"
+  },
+  "usingRegular": {
+    "message": "使用正規表示法提取"
+  },
+  "customize": {
+    "message": "手動填寫"
+  },
+  "capturedBeginning": {
+    "message": "從頭開始擷取"
+  },
+  "alwaysCapturedBeginning": {
+    "message": "始終從頭開始擷取"
+  },
+  "clearCacheConfirmation": {
+    "message": "確認清除快取？"
+  },
+  "cleanupCompleted": {
+    "message": "清理完成！"
+  },
+  "clearCache": {
+    "message": "清除快取"
+  },
+  "downloadConfirmation": {
+    "message": "提前下載可能會造成資料混亂。確認？"
+  },
+  "downloadError": {
+    "message": "下載過程中發生錯誤，請檢查控制台"
+  },
+  "closeConfirmation": {
+    "message": "確認關閉？"
+  },
+  "fileNameError": {
+    "message": "選擇器語法錯誤！"
+  },
+  "capturingData": {
+    "message": "正在擷取資料..."
+  },
+  "captureCompleted": {
+    "message": "擷取完成"
+  },
+  "noHead": {
+    "message": "未偵測到影片標頭資料，請使用本機工具處理"
+  },
+  "headData": {
+    "message": "偵測到多餘的標頭資料，是否清除？"
+  },
+  "downloadCompleted": {
+    "message": "下載完成..."
+  },
+  "notSet": {
+    "message": "未設定"
+  },
+  "notEnoughDataForMerge": {
+    "message": "沒有足夠的資料（影片和音訊）進行本機合併。"
+  },
+  "videoAndAudioNeededForMerge": {
+    "message": "本機合併至少需要一個影片流和一個音訊流。"
+  },
+  "notEnoughValidStreams": {
+    "message": "沒有足夠的有效流進行合併。"
+  },
+  "mergeRequestSent": {
+    "message": "已傳送本機合併請求..."
   }
 }

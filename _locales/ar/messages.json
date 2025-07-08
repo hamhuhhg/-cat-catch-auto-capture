@@ -1,0 +1,1052 @@
+{
+  "catCatch": {
+    "message": "صائد القطط"
+  },
+  "description": {
+    "message": "أداة استشعار وسائط الويب"
+  },
+  "confirm": {
+    "message": "تأكيد"
+  },
+  "currentPage": {
+    "message": "الصفحة الحالية"
+  },
+  "otherPage": {
+    "message": "صفحة أخرى"
+  },
+  "otherFeatures": {
+    "message": "ميزات أخرى"
+  },
+  "mediaControl": {
+    "message": "التحكم في الوسائط"
+  },
+  "loadingData": {
+    "message": "جاري تحميل البيانات..."
+  },
+  "selectWebpage": {
+    "message": "صفحة الويب:"
+  },
+  "selectMedia": {
+    "message": "الوسائط:"
+  },
+  "noMediaDetected": {
+    "message": "لم يتم اكتشاف وسائط على صفحة الويب"
+  },
+  "noControllableMediaDetected": {
+    "message": "لم يتم اكتشاف وسائط يمكن التحكم بها"
+  },
+  "multiplier": {
+    "message": "المضاعف:"
+  },
+  "speedPlayback": {
+    "message": "تشغيل سريع"
+  },
+  "play": {
+    "message": "تشغيل"
+  },
+  "normalPlay": {
+    "message": "تشغيل عادي"
+  },
+  "pictureInPicture": {
+    "message": "صورة داخل صورة"
+  },
+  "fullscreen": {
+    "message": "ملء الشاشة"
+  },
+  "screenshot": {
+    "message": "لقطة شاشة"
+  },
+  "loop": {
+    "message": "تكرار"
+  },
+  "mute": {
+    "message": "كتم الصوت"
+  },
+  "volume": {
+    "message": "الصوت"
+  },
+  "functionEntry": {
+    "message": "مدخل الوظيفة"
+  },
+  "downloader": {
+    "message": "أداة التنزيل"
+  },
+  "parser": {
+    "message": "محلل"
+  },
+  "m3u8Parser": {
+    "message": "محلل M3U8"
+  },
+  "mpdParser": {
+    "message": "محلل MPD"
+  },
+  "jsonFormatter": {
+    "message": "منسق JSON"
+  },
+  "expandAll": {
+    "message": "توسيع الكل"
+  },
+  "expandPlayable": {
+    "message": "توسيع القابل للتشغيل"
+  },
+  "expandSelected": {
+    "message": "توسيع المحدد"
+  },
+  "collapseAll": {
+    "message": "طي الكل"
+  },
+  "videoRecording": {
+    "message": "تسجيل الفيديو"
+  },
+  "closeRecording": {
+    "message": "إغلاق التسجيل"
+  },
+  "recordWebRTC": {
+    "message": "تسجيل WebRTC"
+  },
+  "screenCapture": {
+    "message": "التقاط الشاشة"
+  },
+  "simulateMobile": {
+    "message": "محاكاة الجوال"
+  },
+  "autoDownload": {
+    "message": "تنزيل تلقائي"
+  },
+  "onlineMerge": {
+    "message": "دمج"
+  },
+  "download": {
+    "message": "تنزيل"
+  },
+  "copy": {
+    "message": "نسخ"
+  },
+  "selectAll": {
+    "message": "تحديد الكل"
+  },
+  "invertSelection": {
+    "message": "عكس التحديد"
+  },
+  "filter": {
+    "message": "فلتر"
+  },
+  "clear": {
+    "message": "مسح"
+  },
+  "deepSearch": {
+    "message": "بحث"
+  },
+  "closeSearch": {
+    "message": "إغلاق البحث"
+  },
+  "cacheCapture": {
+    "message": "التقاط"
+  },
+  "closeCapture": {
+    "message": "إغلاق الالتقاط"
+  },
+  "moreFeatures": {
+    "message": "المزيد"
+  },
+  "pause": {
+    "message": "إيقاف مؤقت"
+  },
+  "settings": {
+    "message": "الإعدادات"
+  },
+  "closeSimulation": {
+    "message": "إغلاق المحاكاة"
+  },
+  "closeDownload": {
+    "message": "إغلاق التنزيل"
+  },
+  "enable": {
+    "message": "تمكين"
+  },
+  "disable": {
+    "message": "تعطيل"
+  },
+  "noData": {
+    "message": "لا توجد بيانات"
+  },
+  "regularFilterPlaceholder": {
+    "message": "فلتر تعبير عادي، تطابق عنوان URL للمورد، اضغط Enter للتأكيد"
+  },
+  "option": {
+    "message": "خيار"
+  },
+  "titleOption": {
+    "message": "خيار صائد القطط"
+  },
+  "titleDownload": {
+    "message": "تنزيل صائد القطط"
+  },
+  "titleM3U8": {
+    "message": "محلل M3U8 صائد القطط"
+  },
+  "titleJson": {
+    "message": "منسق JSON صائد القطط"
+  },
+  "titledash": {
+    "message": "محلل Dash صائد القطط"
+  },
+  "suffix": {
+    "message": "لاحقة"
+  },
+  "suffixTip": {
+    "message": "املأ اللاحقة التي لا تحتوي على '.'، إذا لم تكن هناك حاجة لفلترة الحجم، املأ 0."
+  },
+  "extensionName": {
+    "message": "اسم الامتداد"
+  },
+  "filterSize": {
+    "message": "فلترة الحجم"
+  },
+  "delete": {
+    "message": "حذف"
+  },
+  "addSuffix": {
+    "message": "إضافة لاحقة"
+  },
+  "extension": {
+    "message": "امتداد"
+  },
+  "disableAll": {
+    "message": "تعطيل الكل"
+  },
+  "enableAll": {
+    "message": "تمكين الكل"
+  },
+  "type": {
+    "message": "نوع"
+  },
+  "addType": {
+    "message": "إضافة نوع"
+  },
+  "typeTip": {
+    "message": "أدخل نوع المحتوى الصحيح، إذا لم تكن هناك حاجة لفلترة الحجم، املأ 0."
+  },
+  "addTypeError": {
+    "message": "تنسيق نوع الالتقاط غير صحيح، يرجى التحقق"
+  },
+  "regexMatch": {
+    "message": "تطابق تعبير عادي"
+  },
+  "blockResource": {
+    "message": "حظر المورد"
+  },
+  "alert": {
+    "message": "تنبيه"
+  },
+  "regexExpression": {
+    "message": "تعبير عادي"
+  },
+  "addRegex": {
+    "message": "إضافة تعبير عادي"
+  },
+  "regexTest": {
+    "message": "اختبار تعبير عادي"
+  },
+  "regex": {
+    "message": "تعبير عادي"
+  },
+  "flag": {
+    "message": "علم"
+  },
+  "result": {
+    "message": "نتيجة"
+  },
+  "match": {
+    "message": "تطابق"
+  },
+  "noMatch": {
+    "message": "لا يوجد تطابق"
+  },
+  "blockResourceTip": {
+    "message": "احظر الموارد التي لا تريد ظهورها"
+  },
+  "flagTip": {
+    "message": "i: تجاهل حالة الأحرف، g: بحث شامل. يمكن أيضًا تركه فارغًا"
+  },
+  "regexSuffixTip": {
+    "message": "قم بتعيين لاحقة لعنوان URL الذي تم الحصول عليه. يمكن تركه فارغًا، وسيتم اقتطاع اللاحقة تلقائيًا (العديد من الملفات لا تحتوي على لاحقة)"
+  },
+  "regexTip": {
+    "message": "التعبيرات العادية تستهلك الكثير من الموارد، استخدمها بحذر إذا لم تكن ضرورية"
+  },
+  "copyTip": {
+    "message": "لتسهيل استخدام تطبيقات الطرف الثالث، قم بتخصيص المحتوى المكتوب إلى الحافظة بواسطة زر النسخ"
+  },
+  "replaceKeywordList": {
+    "message": "استبدال قائمة الكلمات الرئيسية"
+  },
+  "otherFiles": {
+    "message": "ملفات أخرى"
+  },
+  "resetCopySettings": {
+    "message": "إعادة تعيين إعدادات النسخ"
+  },
+  "autoSetRefererCookieParams": {
+    "message": "تعيين معلمات Referer و Cookie تلقائيًا"
+  },
+  "secretKey": {
+    "message": "مفتاح سري"
+  },
+  "address": {
+    "message": "عنوان"
+  },
+  "documentation": {
+    "message": "توثيق"
+  },
+  "aria2Tip": {
+    "message": "أداة تنزيل ممتازة، انظر كيفية الاستخدام"
+  },
+  "m3u8DLTips": {
+    "message": "أداة تنزيل m3u8 و mpd ممتازة من طرف ثالث، انظر كيفية الاستخدام"
+  },
+  "invoke": {
+    "message": "استدعاء"
+  },
+  "parameter": {
+    "message": "معلمة"
+  },
+  "parameterSetting": {
+    "message": "إعداد المعلمة"
+  },
+  "test": {
+    "message": "اختبار"
+  },
+  "replaceTags": {
+    "message": "استبدال العلامات"
+  },
+  "customSaveFileName": {
+    "message": "اسم ملف حفظ مخصص"
+  },
+  "userAgentTip": {
+    "message": "الافتراضي هو User Agent الخاص بالمتصفح الحالي"
+  },
+  "alwaysDisableCatCatcher": {
+    "message": "تعطيل أداة تنزيل صائد القطط دائمًا"
+  },
+  "autoClosePageAfterDownload": {
+    "message": "إغلاق الصفحة تلقائيًا بعد التنزيل"
+  },
+  "openDownloaderPageInBackground": {
+    "message": "فتح صفحة أداة التنزيل في الخلفية"
+  },
+  "downloaderTip": {
+    "message": "إذا فشل تنزيل المورد، قم بتمكين أداة التنزيل تلقائيًا للمحاولة مرة أخرى."
+  },
+  "autoDownM3u8Tip": {
+    "message": "انقر فوق زر التنزيل واستخدم محلل m3u8 لبدء الدمج والتنزيل فورًا"
+  },
+  "otherSettings": {
+    "message": "إعدادات أخرى"
+  },
+  "resetOtherSettings": {
+    "message": "إعادة تعيين الإعدادات الأخرى"
+  },
+  "previewMode": {
+    "message": "استخدم بروتوكول استدعاء المشغل المحلي لفتح معاينات الفيديو"
+  },
+  "previewModePlaceholder": {
+    "message": "اتركه فارغًا لتعطيله. الافتراضي هو استخدام صفحة منبثقة لمعاينة الفيديو"
+  },
+  "preview": {
+    "message": "معاينة"
+  },
+  "customFilenameOption": {
+    "message": "استخدم اسم ملف مخصص لحفظ الملف (الافتراضي هو عنوان صفحة الويب)"
+  },
+  "saveAsOption": {
+    "message": "اختر دليل الحفظ بعد التنزيل"
+  },
+  "iconOption": {
+    "message": "عرض أيقونة موقع الويب"
+  },
+  "clearOption": {
+    "message": "تحديث، انتقل إلى صفحة جديدة، ومسح البيانات التي تم التقاطها بواسطة علامة التبويب الحالية"
+  },
+  "doNotClear": {
+    "message": "عدم المسح"
+  },
+  "normalClear": {
+    "message": "مسح عادي"
+  },
+  "moreFrequent": {
+    "message": "أكثر تكرارًا"
+  },
+  "excludeDuplicateResources": {
+    "message": "استبعاد الموارد المكررة (الكثير من الموارد ستستهلك الكثير من وحدة المعالجة المركزية)"
+  },
+  "customCSS": {
+    "message": "CSS مخصص"
+  },
+  "autoCaptureSettings": {
+    "message": "إعدادات الالتقاط التلقائي"
+  },
+  "autoCaptureSettingsTip": {
+    "message": "تكوين التقاط الفيديو التلقائي ومتى يتم الحفظ."
+  },
+  "enableAutoCapture": {
+    "message": "تمكين التقاط الفيديو التلقائي"
+  },
+  "watchedOnNextVideo": {
+    "message": "حفظ عند تشغيل الفيديو التالي في نفس علامة التبويب"
+  },
+  "watchedOnTabClose": {
+    "message": "حفظ عند إغلاق علامة تبويب الفيديو"
+  },
+  "watchedOnCaptureComplete": {
+    "message": "حفظ عند التقاط 100% من الفيديو"
+  },
+  "autoCapturePopupEnable": {
+    "message": "تمكين الالتقاط التلقائي"
+  },
+  "autoCapturePopupDisable": {
+    "message": "تعطيل الالتقاط التلقائي"
+  },
+  "resumeAutoCaptureForTab": {
+    "message": "استئناف الالتقاط التلقائي لعلامة التبويب"
+  },
+  "stopAutoCaptureForTab": {
+    "message": "إيقاف الالتقاط التلقائي لعلامة التبويب"
+  },
+  "autoCaptureActiveGlobal": {
+    "message": "الالتقاط التلقائي قيد التشغيل"
+  },
+  "operation": {
+    "message": "عملية"
+  },
+  "exportSettings": {
+    "message": "تصدير الإعدادات"
+  },
+  "importConfiguration": {
+    "message": "استيراد التكوين"
+  },
+  "clearCapturedData": {
+    "message": "مسح البيانات الملتقطة"
+  },
+  "resetSettings": {
+    "message": "إعادة تعيين الإعدادات"
+  },
+  "resetAllSettings": {
+    "message": "إعادة تعيين جميع الإعدادات"
+  },
+  "restartExtension": {
+    "message": "إعادة تشغيل الإضافة"
+  },
+  "about": {
+    "message": "حول"
+  },
+  "confirmReset": {
+    "message": "هل أنت متأكد أنك تريد إعادة التعيين؟"
+  },
+  "invokeProtocolTemplate": {
+    "message": "قالب بروتوكول الاستدعاء"
+  },
+  "customVLCProtocol": {
+    "message": "بروتوكول VLC مخصص"
+  },
+  "systemShare": {
+    "message": "مشاركة النظام"
+  },
+  "default": {
+    "message": "افتراضي"
+  },
+  "goBack": {
+    "message": "العودة"
+  },
+  "openDir": {
+    "message": "فتح الدليل"
+  },
+  "downloadDir": {
+    "message": "دليل التنزيل"
+  },
+  "sendFfmpeg": {
+    "message": "إرسال إلى ffmpeg عبر الإنترنت"
+  },
+  "autoCloserDownload": {
+    "message": "إغلاق الصفحة تلقائيًا بعد التنزيل"
+  },
+  "openInBgDownload": {
+    "message": "فتح صفحة أداة التنزيل في الخلفية"
+  },
+  "m3u8Placeholder": {
+    "message": "أدخل محتوى m3u8 أو قائمة أجزاء ts."
+  },
+  "m3u8Url": {
+    "message": "عنوان URL لـ m3u8"
+  },
+  "nextLevel": {
+    "message": "المستوى التالي"
+  },
+  "nextLevelTip": {
+    "message": "هذا الملف M3U8 يحتوي على ملفات M3U8 متعددة متداخلة."
+  },
+  "multipleAudios": {
+    "message": "مقاطع صوتية متعددة"
+  },
+  "multipleAudiosTip": {
+    "message": "هذا الملف M3U8 يحتوي على مقاطع صوتية متعددة متداخلة"
+  },
+  "multipleSubtitles": {
+    "message": "ترجمات متعددة"
+  },
+  "multipleSubtitlesTip": {
+    "message": "هذا الملف M3U8 يحتوي على ترجمات متعددة متداخلة."
+  },
+  "possibleKey": {
+    "message": "تم العثور على مفاتيح محتملة"
+  },
+  "loading": {
+    "message": "جاري التحميل..."
+  },
+  "waitDownload": {
+    "message": "في انتظار التنزيل..."
+  },
+  "downloadSegmentList": {
+    "message": "قائمة التنزيل"
+  },
+  "originalM3u8": {
+    "message": "M3U8 الأصلي"
+  },
+  "localM3u8": {
+    "message": "M3U8 محلي"
+  },
+  "segmentList": {
+    "message": "مقطع"
+  },
+  "downloadProgress": {
+    "message": "تقدم التنزيل"
+  },
+  "getParameters": {
+    "message": "معلمات GET"
+  },
+  "restoreGetParameters": {
+    "message": "استعادة معلمات GET"
+  },
+  "requestHeaders": {
+    "message": "رؤوس الطلب"
+  },
+  "setRequestHeaders": {
+    "message": "تعيين رؤوس الطلب."
+  },
+  "invokeM3u8DL": {
+    "message": "استدعاء M3U8DL"
+  },
+  "copyCommand": {
+    "message": "نسخ الأمر"
+  },
+  "previewCommand": {
+    "message": "معاينة الأمر"
+  },
+  "addSettingParameters": {
+    "message": "إضافة معلمات الإعداد"
+  },
+  "customKeyPlaceholder": {
+    "message": "تخصيص المفتاح بالنظام الست عشري أو base64، أو عنوان المفتاح"
+  },
+  "uploadKey": {
+    "message": "تحميل مفتاح"
+  },
+  "downloadThreads": {
+    "message": "مؤشرات الترابط"
+  },
+  "ffmpegTranscoding": {
+    "message": "تحويل ترميز FFmpeg"
+  },
+  "mp4Format": {
+    "message": "MP4"
+  },
+  "downloadWhileSaving": {
+    "message": "تنزيل متدفق"
+  },
+  "audioOnly": {
+    "message": "صوت فقط"
+  },
+  "saveAs": {
+    "message": "حفظ باسم"
+  },
+  "skipDecryption": {
+    "message": "تخطي فك التشفير"
+  },
+  "newDownloader": {
+    "message": "أداة تنزيل جديدة"
+  },
+  "downloadRange": {
+    "message": "نطاق التنزيل"
+  },
+  "recordLive": {
+    "message": "تسجيل"
+  },
+  "mergeDownloads": {
+    "message": "دمج التنزيلات"
+  },
+  "redownloadFailedItems": {
+    "message": "إعادة تنزيل العناصر الفاشلة"
+  },
+  "downloadExistingData": {
+    "message": "تنزيل البيانات الموجودة"
+  },
+  "stopDownload": {
+    "message": "إيقاف التنزيل"
+  },
+  "start": {
+    "message": "بدء"
+  },
+  "end": {
+    "message": "نهاية"
+  },
+  "resolution": {
+    "message": "الدقة"
+  },
+  "duration": {
+    "message": "المدة"
+  },
+  "bitrate": {
+    "message": "معدل البت"
+  },
+  "ADTSerror": {
+    "message": "لا يمكن العثور على رأس ADTS. قد يكون موردًا مشفرًا بـ AES-128-ECB، وهو غير مدعوم حاليًا لفك التشفير. يرجى استخدام برنامج دمج من طرف ثالث."
+  },
+  "m3u8Error": {
+    "message": "هناك أخطاء في تحليل أو تشغيل ملف M3U8، تحقق من وحدة التحكم للحصول على معلومات خطأ مفصلة"
+  },
+  "noAudio": {
+    "message": "لا يوجد صوت"
+  },
+  "noVideo": {
+    "message": "لا يوجد فيديو"
+  },
+  "hevcTip": {
+    "message": "ملفات الأجزاء المشفرة بـ HEVC/H.265 مدعومة فقط لتحويل ترميز ffmpeg عبر الإنترنت"
+  },
+  "hevcPreviewTip": {
+    "message": "ملفات الأجزاء المشفرة بـ HEVC/H.265 غير مدعومة للمعاينة."
+  },
+  "m3u8Info": {
+    "message": "إجمالي $num$ ملف، بإجمالي مدة $time$.",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      },
+      "time": {
+        "content": "$2"
+      }
+    }
+  },
+  "encryptedHLS": {
+    "message": "HLS مشفر"
+  },
+  "encryptedSAMPLE": {
+    "message": "الموارد المشفرة بـ SAMPLE-AES-CTR لا يمكن التعامل معها في الوقت الحالي."
+  },
+  "liveHLS": {
+    "message": "بث مباشر HLS"
+  },
+  "keyAddress": {
+    "message": "عنوان المفتاح"
+  },
+  "key": {
+    "message": "مفتاح"
+  },
+  "encryptionAlgorithm": {
+    "message": "طريقة"
+  },
+  "keyDownloadFailed": {
+    "message": "فشل تنزيل المفتاح"
+  },
+  "savePrompt": {
+    "message": "تم الحفظ على القرص، يرجى التحقق من المحتوى الذي تم تنزيله في المتصفح."
+  },
+  "close": {
+    "message": "إغلاق"
+  },
+  "blobM3u8DLError": {
+    "message": "عناوين URL للكائنات الثنائية الكبيرة لا يمكنها استدعاء M3U8DL للتنزيل"
+  },
+  "M3U8DLparameterLong": {
+    "message": "معلمة M3U8DL طويلة جدًا."
+  },
+  "runningCannotChangeSettings": {
+    "message": "قيد التشغيل، لا يمكن تغيير الإعدادات"
+  },
+  "streamSaverTip": {
+    "message": "وظيفة 'التنزيل أثناء الحفظ' لا تدعم تحويل تنسيق ffmpeg عبر الإنترنت، ولا تدعم إعادة تنزيل الشرائح الخاطئة، ولا تدعم 'حفظ باسم'."
+  },
+  "stopRecording": {
+    "message": "إيقاف التسجيل"
+  },
+  "waitingForLiveData": {
+    "message": "في انتظار بيانات البث المباشر"
+  },
+  "sNumError": {
+    "message": "خطأ في الرقم التسلسلي"
+  },
+  "startGTend": {
+    "message": "رقم البدء لا يمكن أن يكون أكبر من رقم النهاية"
+  },
+  "sNumMax": {
+    "message": "الرقم التسلسلي لا يمكن أن يتجاوز $num$",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
+  },
+  "incorrectKey": {
+    "message": "مفتاح غير صحيح"
+  },
+  "addParameters": {
+    "message": "إضافة معلمات"
+  },
+  "decryptionError": {
+    "message": "خطأ في فك التشفير"
+  },
+  "downloadFailed": {
+    "message": "فشل التنزيل"
+  },
+  "retryDownload": {
+    "message": "إعادة محاولة التنزيل"
+  },
+  "recordingDuration": {
+    "message": "مدة التسجيل"
+  },
+  "downloaded": {
+    "message": "تم التنزيل"
+  },
+  "downloadedVideoLength": {
+    "message": "طول الفيديو الذي تم تنزيله"
+  },
+  "downloadComplete": {
+    "message": "اكتمل التنزيل"
+  },
+  "retryingDownload": {
+    "message": "جارٍ إعادة محاولة التنزيل"
+  },
+  "merging": {
+    "message": "جارٍ الدمج"
+  },
+  "fileTooLarge": {
+    "message": "الملف كبير جدًا، الملف أكبر من $size$",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
+  "fileTooLargeStream": {
+    "message": "الملف أكبر من $size$، هل تريد تمكين التنزيل المتدفق؟",
+    "placeholders": {
+      "size": {
+        "content": "$1"
+      }
+    }
+  },
+  "formatConversionError": {
+    "message": "خطأ في تحويل التنسيق"
+  },
+  "streamOnbeforeunload": {
+    "message": "التدفق قيد التقدم، سيتوقف التنزيل بعد الإغلاق"
+  },
+  "fileLoading": {
+    "message": "جارٍ تحميل الملف"
+  },
+  "expandAllNodes": {
+    "message": "توسيع جميع عقد JSON"
+  },
+  "collapseAllNodes": {
+    "message": "طي جميع عقد JSON"
+  },
+  "fileRetrievalFailed": {
+    "message": "فشل استرداد الملف"
+  },
+  "selectVideo": {
+    "message": "تحديد الفيديو"
+  },
+  "extractSlices": {
+    "message": "استخراج الشرائح"
+  },
+  "convertToM3U8": {
+    "message": "تحويل إلى تحليل M3U8"
+  },
+  "selectAudio": {
+    "message": "تحديد الصوت"
+  },
+  "audio": {
+    "message": "صوت"
+  },
+  "video": {
+    "message": "فيديو"
+  },
+  "DRMerror": {
+    "message": "الوسائط محمية بواسطة DRM، يرجى استخدام أدوات طرف ثالث للتنزيل"
+  },
+  "regexTitle": {
+    "message": "تطابق تعبير عادي أو من بحث عميق"
+  },
+  "downloadWithRequestHeader": {
+    "message": "تنزيل بمعلمات رأس الطلب."
+  },
+  "m3u8Playlist": {
+    "message": "قائمة تشغيل M3U8"
+  },
+  "copiedToClipboard": {
+    "message": "تم النسخ إلى الحافظة"
+  },
+  "hasSent": {
+    "message": "تم الإرسال"
+  },
+  "sendFailed": {
+    "message": "فشل الإرسال"
+  },
+  "confirmDownload": {
+    "message": "إجمالي $num$ ملف، هل تؤكد التنزيل؟",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
+  },
+  "confirmLoading": {
+    "message": "يوجد إجمالي $num$ مورد، هل تريد إلغاء التحميل؟",
+    "placeholders": {
+      "num": {
+        "content": "$1"
+      }
+    }
+  },
+  "waitingForMedia": {
+    "message": "في انتظار استقبال ملفات الوسائط... يرجى عدم إغلاق هذه الصفحة."
+  },
+  "exit": {
+    "message": "خروج"
+  },
+  "unknownSize": {
+    "message": "حجم غير معروف"
+  },
+  "saving": {
+    "message": "جارٍ الحفظ"
+  },
+  "saveFailed": {
+    "message": "فشل الحفظ"
+  },
+  "badgeNumber": {
+    "message": "إظهار تنبيه شارة الأيقونة"
+  },
+  "viewSlices": {
+    "message": "عرض جميع الشرائح وتقدم التنزيل"
+  },
+  "send2local": {
+    "message": "نقل البيانات"
+  },
+  "popup": {
+    "message": "نافذة منبثقة"
+  },
+  "defaultPopup": {
+    "message": "وضع النافذة المنبثقة الافتراضي"
+  },
+  "invokeApp": {
+    "message": "استدعاء التطبيق"
+  },
+  "onlineServiceAddress": {
+    "message": "عنوان الخدمة عبر الإنترنت"
+  },
+  "withinChina": {
+    "message": "داخل الصين"
+  },
+  "dataFetchFailed": {
+    "message": "فشل جلب البيانات"
+  },
+  "confirmParameters": {
+    "message": "تأكيد المعلمات"
+  },
+  "searchingForRealKey": {
+    "message": "جارٍ البحث عن المفتاح الحقيقي"
+  },
+  "verifying": {
+    "message": "جارٍ التحقق"
+  },
+  "realKeyNotFound": {
+    "message": "لم يتم العثور على المفتاح الحقيقي"
+  },
+  "blockUrl": {
+    "message": "حظر عنوان URL"
+  },
+  "addUrl": {
+    "message": "إضافة عنوان URL"
+  },
+  "wildcards": {
+    "message": "أحرف البدل"
+  },
+  "blockUrlTips": {
+    "message": "يدعم أحرف البدل * و ؟"
+  },
+  "setWhiteList": {
+    "message": "تعيين إلى القائمة البيضاء"
+  },
+  "autoSend": {
+    "message": "نقل البيانات تلقائيًا"
+  },
+  "manualSend": {
+    "message": "نقل البيانات يدويًا"
+  },
+  "requestMethod": {
+    "message": "طريقة الطلب"
+  },
+  "requestBody": {
+    "message": "جسم الطلب"
+  },
+  "sort": {
+    "message": "فرز"
+  },
+  "asc": {
+    "message": "تصاعدي"
+  },
+  "desc": {
+    "message": "تنازلي"
+  },
+  "getTime": {
+    "message": "وقت الاسترداد"
+  },
+  "fileSize": {
+    "message": "حجم الملف"
+  },
+  "title": {
+    "message": "عنوان"
+  },
+  "noKeyIsRequired": {
+    "message": "لا يلزم وجود مفتاح"
+  },
+  "estimateSize": {
+    "message": "الحجم المقدر"
+  },
+  "retryCount": {
+    "message": "عدد المحاولات"
+  },
+  "useSidePanel": {
+    "message": "استخدام اللوحة الجانبية"
+  },
+  "Script": {
+    "message": "سكربت"
+  },
+  "alwaysSearch": {
+    "message": "تمكين البحث العميق دائمًا"
+  },
+  "mergeCapturedAVLabel": {
+    "message": "دمج الصوت/الفيديو الملتقط (MP4Box محلي)"
+  },
+  "mergeCapturedAVPopupEnable": {
+    "message": "تمكين الدمج المحلي"
+  },
+  "mergeCapturedAVPopupDisable": {
+    "message": "تعطيل الدمج المحلي"
+  },
+  "mergeCapturedAVInTabLabel": {
+    "message": "دمج صوت/فيديو (محلي)"
+  },
+  "waiting": {
+    "message": "في انتظار تشغيل الفيديو"
+  },
+  "downloadCapturedData": {
+    "message": "تنزيل البيانات الملتقطة"
+  },
+  "deleteCapturedData": {
+    "message": "حذف البيانات الملتقطة"
+  },
+  "hide": {
+    "message": "إخفاء"
+  },
+  "automaticDownload": {
+    "message": "تنزيل تلقائي عند اكتمال الالتقاط"
+  },
+  "ffmpeg": {
+    "message": "استخدام ffmpeg للدمج"
+  },
+  "autoToBuffered": {
+    "message": "الانتقال التلقائي إلى نهاية المخزن المؤقت"
+  },
+  "cleanupRedundantHeaderData": {
+    "message": "تنظيف بيانات الترويسة الزائدة"
+  },
+  "clearDataAfterDownload": {
+    "message": "مسح البيانات بعد اكتمال التنزيل"
+  },
+  "fileName": {
+    "message": "اسم الملف"
+  },
+  "selector": {
+    "message": "التعبير"
+  },
+  "regular": {
+    "message": "تعبير عادي"
+  },
+  "usingSelector": {
+    "message": "استخراج بالتعبير"
+  },
+  "usingRegular": {
+    "message": "استخراج بالتعبير العادي"
+  },
+  "customize": {
+    "message": "تخصيص"
+  },
+  "capturedBeginning": {
+    "message": "التقاط من البداية"
+  },
+  "alwaysCapturedBeginning": {
+    "message": "التقاط دائمًا من البداية"
+  },
+  "clearCacheConfirmation": {
+    "message": "تأكيد مسح ذاكرة التخزين المؤقت؟"
+  },
+  "cleanupCompleted": {
+    "message": "اكتمل التنظيف!"
+  },
+  "clearCache": {
+    "message": "مسح ذاكرة التخزين المؤقت"
+  },
+  "downloadConfirmation": {
+    "message": "التنزيل المسبق قد يتسبب في فوضى البيانات. تأكيد؟"
+  },
+  "downloadError": {
+    "message": "حدث خطأ أثناء التنزيل، يرجى مراجعة وحدة التحكم"
+  },
+  "closeConfirmation": {
+    "message": "تأكيد الإغلاق؟"
+  },
+  "fileNameError": {
+    "message": "خطأ في اسم الملف!"
+  },
+  "capturingData": {
+    "message": "جارٍ التقاط البيانات..."
+  },
+  "captureCompleted": {
+    "message": "اكتمل الالتقاط"
+  },
+  "noHead": {
+    "message": "لم يتم اكتشاف بيانات ترويسة الفيديو، يرجى استخدام أداة محلية للمعالجة"
+  },
+  "headData": {
+    "message": "تم اكتشاف بيانات ترويسة زائدة، هل تريد مسحها؟"
+  },
+  "downloadCompleted": {
+    "message": "اكتمل التنزيل..."
+  },
+  "notSet": {
+    "message": "غير معين"
+  },
+  "notEnoughDataForMerge": {
+    "message": "لا توجد بيانات كافية (فيديو وصوت) للدمج المحلي."
+  },
+  "videoAndAudioNeededForMerge": {
+    "message": "مطلوب دفق فيديو ودفق صوتي واحد على الأقل للدمج المحلي."
+  },
+  "notEnoughValidStreams": {
+    "message": "لا توجد تدفقات صالحة كافية للدمج."
+  },
+  "mergeRequestSent": {
+    "message": "تم إرسال طلب الدمج المحلي..."
+  }
+}

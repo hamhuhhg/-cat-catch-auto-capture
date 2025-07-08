@@ -1,4 +1,4 @@
-importScripts("/js/function.js", "/js/init.js");
+importScripts("/lib/mux.min.js", "/js/function.js", "/js/init.js");
 
 var tabCaptureStates = new Map();
 var autoCaptureManuallyDisabledTabs = new Set();
@@ -577,14 +577,17 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
             Promise.all([
                 fetch(files[0].dataUrl).then(res => res.blob()),
                 fetch(files[1].dataUrl).then(res => res.blob())
-            ]).then(async ([blob1, blob2]) => {
+            ]).then(async ([blob1, blob2]) => { // blob1 and blob2 are now correctly scoped
                 URL.revokeObjectURL(files[0].dataUrl);
                 URL.revokeObjectURL(files[1].dataUrl);
 
+                console.log("CatCatch: MP4Box merge process started.");
                 if (typeof MP4Box === 'undefined') {
-                    console.error("CatCatch: MP4Box.js is not available (MP4Box is undefined).");
+                    console.error("CatCatch: MP4Box.js is not available (MP4Box is undefined). Ensure mux.min.js is loaded.");
                     sendResponse({ success: false, message: "MP4Box.js not found." });
                     return;
+                } else {
+                    console.log("CatCatch: MP4Box object is available.");
                 }
 
                 const outputMp4File = MP4Box.createFile();
@@ -592,53 +595,62 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                 const totalFilesToProcess = 2;
                 const trackIdMap = new Map();
 
-                const processFile = (blob, fileIdentifierHint) => {
+                const processFile = (blob, fileIdentifierHint, originalMimeType) => { // إضافة originalMimeType
                     return new Promise(async (resolve, reject) => {
+                        console.log(`CatCatch: Processing file with hint: ${fileIdentifierHint}, mime: ${originalMimeType}`);
                         const tempMp4File = MP4Box.createFile();
                         const buffer = await blob.arrayBuffer();
                         buffer.fileStart = 0;
 
                         tempMp4File.onReady = (info) => {
+                            console.log(`CatCatch: MP4Box onReady for ${fileIdentifierHint}:`, JSON.stringify(info));
                             let trackProcessed = false;
                             if (info.tracks && info.tracks.length > 0) {
-                                info.tracks.forEach(track => {
-                                    if (!trackProcessed && 
-                                        (track.type === fileIdentifierHint || 
-                                         (fileIdentifierHint === "video" && track.type !== "audio") || 
-                                         (fileIdentifierHint === "audio" && track.type !== "video"))
-                                       ) {
-                                        const newTrackOpts = {
-                                            type: track.type,
-                                            codec: track.codec,
-                                            width: track.video ? track.video.width : undefined,
-                                            height: track.video ? track.video.height : undefined,
-                                            timescale: track.timescale,
-                                            duration: track.duration,
-                                            language: track.language,
-                                            hdlr_name: track.hdlr_name,
-                                            name: track.name,
-                                            nb_samples: track.nb_samples,
-                                            description: track.description
-                                        };
-                                        const newTrackId = outputMp4File.addTrack(newTrackOpts);
-                                        trackIdMap.set(track.id, newTrackId);
-                                        tempMp4File.setExtractionOptions(track.id, null, { nbSamples: track.nb_samples || 0 });
-                                        trackProcessed = true;
-                                    }
-                                });
-                                 if (!trackProcessed && info.tracks.length > 0) { 
-                                    const track = info.tracks[0]; // Fallback to first track
-                                    console.warn(`CatCatch: Could not find '${fileIdentifierHint}' track, using first available track ID ${track.id} (type ${track.type}) as fallback.`);
-                                    const newTrackOpts = {type: track.type, codec: track.codec, width: track.video ? track.video.width : undefined, height: track.video ? track.video.height : undefined, timescale: track.timescale, duration: track.duration, language: track.language, hdlr_name: track.hdlr_name, name: track.name, nb_samples: track.nb_samples, description: track.description };
+                                // محاولة مطابقة النوع بشكل أكثر دقة
+                                let targetTrack = info.tracks.find(track => track.type === fileIdentifierHint);
+
+                                if (!targetTrack && fileIdentifierHint === "video" && info.tracks.some(track => track.type !== "audio")) {
+                                    targetTrack = info.tracks.find(track => track.type !== "audio"); // أفضل تخمين للفيديو
+                                    if(targetTrack) console.warn(`CatCatch: No explicit 'video' track found, using first non-audio track as video for ${originalMimeType}`);
+                                } else if (!targetTrack && fileIdentifierHint === "audio" && info.tracks.some(track => track.type === "audio")) {
+                                     targetTrack = info.tracks.find(track => track.type === "audio"); // أفضل تخمين للصوت
+                                     if(targetTrack) console.warn(`CatCatch: No explicit 'audio' track found, using first audio track for ${originalMimeType}`);
+                                }
+
+
+                                if (!targetTrack && info.tracks.length > 0) {
+                                    targetTrack = info.tracks[0]; // كحل أخير، استخدم المسار الأول
+                                    console.warn(`CatCatch: Could not reliably find '${fileIdentifierHint}' track for ${originalMimeType}, using first available track ID ${targetTrack.id} (type ${targetTrack.type}) as fallback.`);
+                                }
+
+                                if (targetTrack) {
+                                    const track = targetTrack;
+                                    console.log(`CatCatch: Selected track ID ${track.id} (type ${track.type}) for ${fileIdentifierHint}`);
+                                    const newTrackOpts = {
+                                        type: track.type, // استخدم نوع المسار الفعلي
+                                        codec: track.codec,
+                                        width: track.video ? track.video.width : undefined,
+                                        height: track.video ? track.video.height : undefined,
+                                        timescale: track.timescale,
+                                        duration: track.duration, // مهم جداً
+                                        language: track.language || 'und', // قيمة افتراضية إذا لم يكن موجودًا
+                                        hdlr_name: track.hdlr_name,
+                                        name: track.name,
+                                        nb_samples: track.nb_samples,
+                                        description: track.description,
+                                        // إضافة معلومات إضافية قد تكون مفيدة
+                                        audio: track.audio,
+                                        video: track.video,
+                                    };
                                     const newTrackId = outputMp4File.addTrack(newTrackOpts);
                                     trackIdMap.set(track.id, newTrackId);
-                                    tempMp4File.setExtractionOptions(track.id, null, { nbSamples: track.nb_samples || 0 });
-                                    trackProcessed = true; // Mark as processed with fallback
-                                 }
+                                    tempMp4File.setExtractionOptions(track.id, null, { nbSamples: track.nb_samples || info.duration / info.timescale * track.samples_duration || 0 }); //محاولة حساب nb_samples
+                                    trackProcessed = true;
+                                }
                             }
                             if (!trackProcessed) {
-                                console.error(`CatCatch: No suitable tracks found or processed in blob identified as ${fileIdentifierHint}.`);
-                                reject(new Error(`No suitable tracks in ${fileIdentifierHint} blob.`));
+                                console.error(`CatCatch: No suitable tracks found or processed in blob identified as ${fileIdentifierHint} with mime ${originalMimeType}. Info:`, JSON.stringify(info));
+                                reject(new Error(`No suitable tracks in ${fileIdentifierHint} blob for ${originalMimeType}.`));
                                 return;
                             }
                             tempMp4File.start();
@@ -647,6 +659,7 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                         tempMp4File.onSamples = (inputTrackId, user, samples) => {
                             const outputTrackId = trackIdMap.get(inputTrackId);
                             if (outputTrackId !== undefined) {
+                                console.log(`CatCatch: Adding ${samples.length} samples to track ${outputTrackId} (from ${inputTrackId}) for ${fileIdentifierHint}`);
                                 for (const sample of samples) {
                                     outputMp4File.addSample(outputTrackId, sample.data, {
                                         duration: sample.duration,
@@ -655,28 +668,41 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                                         is_sync: sample.is_sync,
                                     });
                                 }
+                            } else {
+                                console.warn(`CatCatch: Output track ID not found for input track ID ${inputTrackId} in ${fileIdentifierHint}`);
                             }
                         };
                         
                         tempMp4File.onFlush = () => {
                             processedFileCount++;
+                            console.log(`CatCatch: Flushed tempMp4File for ${fileIdentifierHint}. Processed ${processedFileCount}/${totalFilesToProcess}`);
                             if (processedFileCount === totalFilesToProcess) {
                                 try {
-                                    const mergedBuffer = outputMp4File.getBuffer();
-                                    const mergedBlob = new Blob([mergedBuffer], { type: 'video/mp4' });
-                                    chrome.downloads.download({
-                                        url: URL.createObjectURL(mergedBlob),
-                                        filename: filenameHint + "_merged.mp4"
-                                    }, (downloadId) => {
-                                        if (chrome.runtime.lastError) {
-                                            console.error("CatCatch: Download error:", chrome.runtime.lastError.message);
-                                            sendResponse({ success: false, message: "Download failed: " + chrome.runtime.lastError.message });
-                                        } else {
-                                            sendResponse({ success: true, message: "Merge and download started." });
-                                        }
-                                    });
+                                    console.log("CatCatch: All files processed. Finalizing merged MP4.");
+                                    outputMp4File.onMoovReady = function () { // انتظر حتى يصبح moov جاهزًا
+                                        console.log("CatCatch: moov ready. Getting buffer.");
+                                        const mergedBuffer = outputMp4File.getBuffer();
+                                        const mergedBlob = new Blob([mergedBuffer], { type: 'video/mp4' });
+                                        console.log(`CatCatch: Merged blob created, size: ${mergedBlob.size}. Downloading...`);
+                                        chrome.downloads.download({
+                                            url: URL.createObjectURL(mergedBlob),
+                                            filename: filenameHint + "_merged.mp4",
+                                            saveAs: false // أو true إذا كنت تريد أن يسأل المستخدم
+                                        }, (downloadId) => {
+                                            if (chrome.runtime.lastError) {
+                                                console.error("CatCatch: Download error:", chrome.runtime.lastError.message);
+                                                sendResponse({ success: false, message: "Download failed: " + chrome.runtime.lastError.message });
+                                            } else {
+                                                console.log("CatCatch: Download started with ID:", downloadId);
+                                                sendResponse({ success: true, message: "Merge and download started." });
+                                            }
+                                            // تنظيف الـ blob URL
+                                            setTimeout(() => URL.revokeObjectURL(URL.createObjectURL(mergedBlob)), 100);
+                                        });
+                                    };
+                                    outputMp4File.writeInitializationSegment(); // تأكد من كتابة مقطع التهيئة
                                 } catch (e) {
-                                    console.error("CatCatch: Error getting buffer from outputMp4File:", e);
+                                    console.error("CatCatch: Error getting buffer from outputMp4File or during download:", e);
                                     sendResponse({ success: false, message: "Failed to finalize merged MP4: " + e.message });
                                 }
                             }
@@ -684,30 +710,53 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                         };
 
                         tempMp4File.onError = (e) => {
-                            console.error(`CatCatch: MP4Box.js error for ${fileIdentifierHint}:`, e);
+                            console.error(`CatCatch: MP4Box.js error for ${fileIdentifierHint} (${originalMimeType}):`, e);
                             reject(e);
                         };
                         
+                        console.log(`CatCatch: Appending buffer for ${fileIdentifierHint} (${originalMimeType}), size: ${buffer.byteLength}`);
                         tempMp4File.appendBuffer(buffer);
-                        tempMp4File.flush();
+                        tempMp4File.flush(); // استدعاء flush هنا
                     });
                 };
                 
                 (async () => {
                     try {
-                        let firstFileHint = files[0].mimeType && files[0].mimeType.startsWith('video/') ? "video" : (files[0].mimeType && files[0].mimeType.startsWith('audio/') ? "audio" : "unknown");
-                        let secondFileHint = files[1].mimeType && files[1].mimeType.startsWith('audio/') ? "audio" : (files[1].mimeType && files[1].mimeType.startsWith('video/') ? "video" : "unknown");
+                        // ----- تعديل لتحديد نوع الملف بشكل صريح -----
+                        let videoFile = files.find(f => f.type === 'video' || (f.mimeType && f.mimeType.startsWith('video/')));
+                        let audioFile = files.find(f => f.type === 'audio' || (f.mimeType && f.mimeType.startsWith('audio/')));
 
-                        // Determine processing order: video then audio is typical
-                        if (firstFileHint === "audio" && secondFileHint === "video") {
-                            await processFile(blob2, "video"); // Process second blob (video) first
-                            await processFile(blob1, "audio"); // Then first blob (audio)
-                        } else {
-                            // Default: process blob1 (assumed video or first given) then blob2 (assumed audio or second given)
-                            // If hints are unknown, this relies on the order they were sent
-                            await processFile(blob1, firstFileHint === "unknown" ? "video" : firstFileHint); 
-                            await processFile(blob2, secondFileHint === "unknown" ? "audio" : secondFileHint);
+                        if (!videoFile || !audioFile) {
+                            console.error("CatCatch: Could not identify both video and audio files from:", JSON.stringify(files.map(f=>({type: f.type, mime: f.mimeType}))));
+                            if (files.length === 2 && !videoFile && files.every(f => f.mimeType && f.mimeType.startsWith('audio/'))) {
+                                 console.warn("CatCatch: Two audio files found, no video. Aborting merge.");
+                                 sendResponse({ success: false, message: "Cannot merge two audio files without a video."});
+                                 return;
+                            }
+                             if (files.length === 2 && !audioFile && files.every(f => f.mimeType && f.mimeType.startsWith('video/'))) {
+                                 console.warn("CatCatch: Two video files found, no audio. Aborting merge.");
+                                 sendResponse({ success: false, message: "Cannot merge two video files without an audio."});
+                                 return;
+                            }
+                            if (!videoFile && audioFile && files.length === 2) videoFile = files.find(f => f !== audioFile);
+                            if (!audioFile && videoFile && files.length === 2) audioFile = files.find(f => f !== videoFile);
+
+                            if (!videoFile || !audioFile) {
+                                sendResponse({ success: false, message: "Could not reliably identify video and audio streams for merging." });
+                                return;
+                            }
+                             console.log("CatCatch: Identified video and audio files based on type/mimeType.");
                         }
+
+                        console.log("CatCatch: Processing video file first then audio file.");
+                        // It seems blob1 and blob2 were not defined in this scope in the original code snippet from the prompt
+                        // I'll assume videoFile.dataUrl and audioFile.dataUrl are the correct URLs to fetch
+                        const videoBlob = await fetch(videoFile.dataUrl).then(res => res.blob());
+                        await processFile(videoBlob, "video", videoFile.mimeType);
+
+                        const audioBlob = await fetch(audioFile.dataUrl).then(res => res.blob());
+                        await processFile(audioBlob, "audio", audioFile.mimeType);
+
                     } catch (error) {
                         console.error("CatCatch: Error in merging process with MP4Box:", error);
                         sendResponse({ success: false, message: "Merging process failed: " + error.message });

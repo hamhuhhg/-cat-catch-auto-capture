@@ -946,5 +946,107 @@
   },
   "mergeCapturedAVInTabLabel": {
     "message": "合并音视频 (本地)"
+  },
+  "waiting": {
+    "message": "等待视频播放"
+  },
+  "downloadCapturedData": {
+    "message": "下载已捕获的数据"
+  },
+  "deleteCapturedData": {
+    "message": "删除已捕获数据"
+  },
+  "hide": {
+    "message": "隐藏"
+  },
+  "automaticDownload": {
+    "message": "完成捕获自动下载"
+  },
+  "ffmpeg": {
+    "message": "使用ffmpeg合并"
+  },
+  "autoToBuffered": {
+    "message": "自动跳转缓冲尾"
+  },
+  "cleanupRedundantHeaderData": {
+    "message": "清理多余头部数据"
+  },
+  "clearDataAfterDownload": {
+    "message": "下载完成后清空数据"
+  },
+  "fileName": {
+    "message": "文件名设置"
+  },
+  "selector": {
+    "message": "表达式"
+  },
+  "regular": {
+    "message": "正则"
+  },
+  "usingSelector": {
+    "message": "表达式提取"
+  },
+  "usingRegular": {
+    "message": "正则提取"
+  },
+  "customize": {
+    "message": "手动填写"
+  },
+  "capturedBeginning": {
+    "message": "从头捕获"
+  },
+  "alwaysCapturedBeginning": {
+    "message": "始终从头捕获"
+  },
+  "clearCacheConfirmation": {
+    "message": "确认清除缓存?"
+  },
+  "cleanupCompleted": {
+    "message": "清理完成!"
+  },
+  "clearCache": {
+    "message": "清理缓存"
+  },
+  "downloadConfirmation": {
+    "message": "提前下载可能会造成数据混乱.确认？"
+  },
+  "downloadError": {
+    "message": "下载过程中出错，请查看控制台"
+  },
+  "closeConfirmation": {
+    "message": "确认关闭?"
+  },
+  "fileNameError": {
+    "message": "选择器语法错误!"
+  },
+  "capturingData": {
+    "message": "捕获数据中..."
+  },
+  "captureCompleted": {
+    "message": "捕获完成"
+  },
+  "noHead": {
+    "message": "没有检测到视频头部数据, 请使用本地工具处理"
+  },
+  "headData": {
+    "message": "检测到多余头部数据, 是否清除?"
+  },
+  "downloadCompleted": {
+    "message": "下载完毕..."
+  },
+  "notSet": {
+    "message": "未设置"
+  },
+  "notEnoughDataForMerge": {
+    "message": "没有足够的数据(视频和音频)进行本地合并."
+  },
+  "videoAndAudioNeededForMerge": {
+    "message": "本地合并至少需要一个视频流和一个音频流."
+  },
+  "notEnoughValidStreams": {
+    "message": "没有足够的有效流进行合并."
+  },
+  "mergeRequestSent": {
+    "message": "已发送本地合并请求..."
   }
 }

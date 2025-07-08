@@ -34,15 +34,79 @@ chrome.storage.sync.get(G.OptionLists, function (items) {
     }
     setTimeout(() => {
         for (let key in items) {
-            if (key == "Ext" || key == "Type" || key == "Regex") { continue; }
+            if (key == "Ext" || key == "Type" || key == "Regex" || key === "downloadSeparateFiles" || key === "mergeCapturedAV" || key === "useFFmpeg") { continue; } // تجاهل خيارات الدمج هنا مؤقتًا
             if (typeof items[key] == "boolean") {
                 $(`#${key}`).prop("checked", items[key]);
             } else {
                 $(`#${key}`).val(items[key]);
             }
         }
+
+        // معالجة خيارات الدمج والتنزيل
+        if (items.downloadSeparateFiles) {
+            $("#globalDownloadSeparate").prop("checked", true);
+        } else if (items.mergeCapturedAV) { // mergeCapturedAV هو لخيار MP4Box
+            $("#globalMergeLocal").prop("checked", true);
+        } else if (items.useFFmpeg) { // useFFmpeg هو لخيار ffmpeg
+            $("#globalMergeFFmpeg").prop("checked", true);
+        } else {
+            // إذا لم يتم تحديد أي شيء، اجعل "تنزيل منفصل" هو الافتراضي
+            $("#globalDownloadSeparate").prop("checked", true);
+            // واحفظ هذا كإعداد افتراضي إذا لم يكن هناك شيء محفوظ
+            if (items.downloadSeparateFiles === undefined && items.mergeCapturedAV === undefined && items.useFFmpeg === undefined) {
+                chrome.storage.sync.set({ downloadSeparateFiles: true, mergeCapturedAV: false, useFFmpeg: false });
+                localStorage.setItem("CatCatchCatch_noMerge", "checked");
+                localStorage.removeItem("CatCatchCatch_localMerge");
+                localStorage.removeItem("CatCatchCatch_ffmpegMerge");
+            }
+        }
     }, 100);
 });
+
+// معالجات أحداث لأزرار الراديو الخاصة بالدمج العام
+$("input[name='globalMergeOptions']").change(function() {
+    const selectedValue = $(this).val();
+    let settingsToSave = {
+        downloadSeparateFiles: false,
+        mergeCapturedAV: false, // لـ MP4Box
+        useFFmpeg: false // لـ FFmpeg
+    };
+    let localCatchSettings = {
+        noMerge: "",
+        localMerge: "",
+        ffmpegMerge: ""
+    };
+
+    if (selectedValue === "separate") {
+        settingsToSave.downloadSeparateFiles = true;
+        localCatchSettings.noMerge = "checked";
+    } else if (selectedValue === "local") {
+        settingsToSave.mergeCapturedAV = true;
+        localCatchSettings.localMerge = "checked";
+    } else if (selectedValue === "ffmpeg") {
+        settingsToSave.useFFmpeg = true;
+        localCatchSettings.ffmpegMerge = "checked";
+    }
+
+    chrome.storage.sync.set(settingsToSave, function() {
+        if (chrome.runtime.lastError) {
+            console.error("Error saving global merge options:", chrome.runtime.lastError);
+        } else {
+            console.log("Global merge options saved:", settingsToSave);
+            // تحديث localStorage لـ catch.js
+            localStorage.setItem("CatCatchCatch_noMerge", localCatchSettings.noMerge);
+            localStorage.setItem("CatCatchCatch_localMerge", localCatchSettings.localMerge);
+            localStorage.setItem("CatCatchCatch_ffmpegMerge", localCatchSettings.ffmpegMerge);
+             // تحديث قيمة CatCatchCatch_ffmpeg القديمة للتوافق
+            if (selectedValue === "ffmpeg") {
+                localStorage.setItem("CatCatchCatch_ffmpeg", "checked");
+            } else {
+                localStorage.removeItem("CatCatchCatch_ffmpeg");
+            }
+        }
+    });
+});
+
 
 //新增格式
 $("#AddExt").bind("click", function () {
