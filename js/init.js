@@ -171,7 +171,7 @@ G.OptionLists = {
     watchedOnNextVideo: true,
     watchedOnTabClose: true,
     watchedOnCaptureComplete: true,
-    captureDownloadMode: "ffmpeg", // وضع التقاط وتنزيل الفيديو/الصوت: "ffmpeg", "mp4box", "separate"
+    mergeCapturedAV: false, // Option for local MP4Box merging
 };
 // 本地储存的配置
 G.LocalVar = {
