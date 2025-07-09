@@ -1,4 +1,4 @@
-importScripts("/lib/mux.min.js", "/js/function.js", "/js/init.js");
+importScripts("/js/function.js", "/js/init.js");
 
 var tabCaptureStates = new Map();
 var autoCaptureManuallyDisabledTabs = new Set();
@@ -397,7 +397,7 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                 watchedOnCaptureComplete: G.watchedOnCaptureComplete,
                 watchedOnTabClose: G.watchedOnTabClose,
                 watchedOnNextVideo: G.watchedOnNextVideo,
-                captureDownloadMode: G.captureDownloadMode // إضافة الإعداد الجديد
+                mergeCapturedAV: G.mergeCapturedAV 
             };
             chrome.tabs.sendMessage(sender.tab.id, {
                 catCatchMessageRelay: true, for: "catchScript",
@@ -573,53 +573,22 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
 
     if (Message.Message === "mergeCapturedAVRequest") {
         const { files, filenameHint, tabId } = Message;
+        if (files && files.length === 2 && filenameHint && tabId) {
+            Promise.all([
+                fetch(files[0].dataUrl).then(res => res.blob()),
+                fetch(files[1].dataUrl).then(res => res.blob())
+            ]).then(async ([blob1, blob2]) => {
+                URL.revokeObjectURL(files[0].dataUrl);
+                URL.revokeObjectURL(files[1].dataUrl);
 
-        // التحقق من المدخلات الأساسية
-        if (!files || !Array.isArray(files) || files.length !== 2 || !filenameHint || !tabId) {
-            console.error("CatCatch: Invalid parameters for mergeCapturedAVRequest.", Message);
-            sendResponse({ success: false, message: "Invalid parameters for merge request." });
-            // تأكد من إلغاء URLs إذا كانت موجودة لتجنب التسرب
-            if (files && files[0] && files[0].dataUrl) URL.revokeObjectURL(files[0].dataUrl);
-            if (files && files[1] && files[1].dataUrl) URL.revokeObjectURL(files[1].dataUrl);
-            return true;
-        }
+                if (typeof MP4Box === 'undefined') {
+                    console.error("CatCatch: MP4Box.js is not available (MP4Box is undefined).");
+                    sendResponse({ success: false, message: "MP4Box.js not found." });
+                    return;
+                }
 
-        // التحقق من أنواع MIME وتحديد ملف الفيديو والصوت
-        let videoFile = null;
-        let audioFile = null;
-
-        if (files[0].mimeType && files[0].mimeType.startsWith('video/') && files[1].mimeType && files[1].mimeType.startsWith('audio/')) {
-            videoFile = files[0];
-            audioFile = files[1];
-        } else if (files[0].mimeType && files[0].mimeType.startsWith('audio/') && files[1].mimeType && files[1].mimeType.startsWith('video/')) {
-            videoFile = files[1];
-            audioFile = files[0];
-        } else {
-            // إذا لم تكن الأنواع واضحة، أو كان كلاهما فيديو أو كلاهما صوت
-            console.error("CatCatch: Could not determine video and audio tracks from MIME types for merge.", files);
-            sendResponse({ success: false, message: "Could not determine video/audio tracks. Ensure one video and one audio file are provided." });
-            URL.revokeObjectURL(files[0].dataUrl);
-            URL.revokeObjectURL(files[1].dataUrl);
-            return true;
-        }
-
-        if (typeof MP4Box === 'undefined') {
-            console.error("CatCatch: MP4Box.js is not available (MP4Box is undefined).");
-            sendResponse({ success: false, message: "MP4Box.js not found. Ensure it's loaded." });
-            URL.revokeObjectURL(videoFile.dataUrl);
-            URL.revokeObjectURL(audioFile.dataUrl);
-            return true;
-        }
-
-        Promise.all([
-            fetch(videoFile.dataUrl).then(res => res.blob()),
-            fetch(audioFile.dataUrl).then(res => res.blob())
-        ]).then(async ([videoBlob, audioBlob]) => {
-            URL.revokeObjectURL(videoFile.dataUrl); // تم جلب البيانات، يمكن إلغاء الـ URL
-            URL.revokeObjectURL(audioFile.dataUrl); // تم جلب البيانات، يمكن إلغاء الـ URL
-
-            const outputMp4File = MP4Box.createFile();
-            let processedFileCount = 0;
+                const outputMp4File = MP4Box.createFile();
+                let processedFileCount = 0;
                 const totalFilesToProcess = 2;
                 const trackIdMap = new Map();
 
@@ -726,50 +695,53 @@ chrome.runtime.onMessage.addListener(function (Message, sender, sendResponse) {
                 
                 (async () => {
                     try {
-                        // تم تحديد videoBlob و audioBlob بالفعل بناءً على أنواع MIME
-                        // لذا، يمكننا الآن معالجتهما مباشرةً بالتلميحات الصحيحة.
-                        await processFile(videoBlob, "video");
-                        await processFile(audioBlob, "audio");
+                        let firstFileHint = files[0].mimeType && files[0].mimeType.startsWith('video/') ? "video" : (files[0].mimeType && files[0].mimeType.startsWith('audio/') ? "audio" : "unknown");
+                        let secondFileHint = files[1].mimeType && files[1].mimeType.startsWith('audio/') ? "audio" : (files[1].mimeType && files[1].mimeType.startsWith('video/') ? "video" : "unknown");
+
+                        // Determine processing order: video then audio is typical
+                        if (firstFileHint === "audio" && secondFileHint === "video") {
+                            await processFile(blob2, "video"); // Process second blob (video) first
+                            await processFile(blob1, "audio"); // Then first blob (audio)
+                        } else {
+                            // Default: process blob1 (assumed video or first given) then blob2 (assumed audio or second given)
+                            // If hints are unknown, this relies on the order they were sent
+                            await processFile(blob1, firstFileHint === "unknown" ? "video" : firstFileHint); 
+                            await processFile(blob2, secondFileHint === "unknown" ? "audio" : secondFileHint);
+                        }
                     } catch (error) {
-                        console.error("CatCatch: Error in MP4Box merging process:", error);
-                        sendResponse({ success: false, message: "MP4Box merging process failed: " + error.message });
+                        console.error("CatCatch: Error in merging process with MP4Box:", error);
+                        sendResponse({ success: false, message: "Merging process failed: " + error.message });
                     }
                 })();
 
             }).catch(error => {
-                // هذا الخطأ يحدث إذا فشل fetch()
-                console.error("CatCatch: Error fetching blobs for MP4Box merging:", error);
-                sendResponse({ success: false, message: "Error fetching data for MP4Box merge: " + error.message });
-            });
-        // لا نضع sendResponse هنا لأنها غير متزامنة ويتم التعامل معها داخل Promises
-        return true; 
-    }
-
-    // المعالج الجديد لـ captureDownloadMode
-    if (Message.Message === "setCaptureDownloadMode") {
-        if (Message.mode && ["ffmpeg", "mp4box", "separate"].includes(Message.mode)) {
-            G.captureDownloadMode = Message.mode;
-            chrome.storage.sync.set({ captureDownloadMode: G.captureDownloadMode }, () => {
-                if (chrome.runtime.lastError) {
-                    console.error("CatCatch: Error saving captureDownloadMode state:", chrome.runtime.lastError.message);
-                    sendResponse({ success: false, error: chrome.runtime.lastError.message });
-                } else {
-                    console.log("CatCatch: captureDownloadMode updated to", G.captureDownloadMode);
-                    sendResponse({ success: true });
-                }
+                console.error("CatCatch: Error fetching blobs for merging:", error);
+                sendResponse({ success: false, message: "Error fetching data for merge." });
             });
         } else {
-            console.error("CatCatch: Invalid mode for setCaptureDownloadMode:", Message.mode);
-            sendResponse({ success: false, error: "Invalid mode provided." });
+            console.error("CatCatch: Invalid mergeCapturedAVRequest received.", Message);
+            sendResponse({ success: false, message: "Invalid request parameters." });
         }
         return true; 
     }
 
-    // إزالة المعالج القديم setMergeCapturedAVState إذا لم يعد مستخدمًا
-    // if (Message.Message === "setMergeCapturedAVState") {
-    //     // ... (الكود القديم معطل الآن)
-    // }
-
+    if (Message.Message === "setMergeCapturedAVState") {
+        if (typeof Message.state === 'boolean') {
+            G.mergeCapturedAV = Message.state;
+            chrome.storage.sync.set({ mergeCapturedAV: G.mergeCapturedAV }, () => {
+                if (chrome.runtime.lastError) {
+                    console.error("CatCatch: Error saving mergeCapturedAV state:", chrome.runtime.lastError.message);
+                    sendResponse({ success: false, error: chrome.runtime.lastError.message });
+                } else {
+                    sendResponse({ success: true });
+                }
+            });
+        } else {
+            console.error("CatCatch: Invalid state for setMergeCapturedAVState:", Message.state);
+            sendResponse({ success: false, error: "Invalid state." });
+        }
+        return true; 
+    }
     // If no message was handled by this point, it might be an idea to send a default response
     // or ensure all message types are covered or explicitly ignored.
     // For now, we assume any message not caught above doesn't require a response or is handled elsewhere.
