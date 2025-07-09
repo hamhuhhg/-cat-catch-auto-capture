@@ -14,6 +14,7 @@
             this.catchMedia = [];   // 捕获的媒体数据
             this.mediaSize = 0; // 捕获的媒体数据大小
             this.setFileName = null;    // 文件名
+            this.currentCaptureSessionId = null; // إضافة معرف الجلسة
 
             // 移动面板相关属性
             this.x = 0;
@@ -64,6 +65,13 @@
                 if (action === "receiveSettingsAndTabId") {
                     if (settings) {
                         this.settings = { ...this.settings, ...settings };
+                        if (settings.captureDownloadMode) {
+                            this.captureDownloadMode = settings.captureDownloadMode;
+                            const radioButtons = this.catCatch.querySelectorAll('input[name="catCatchCaptureModeWidget"]');
+                            radioButtons.forEach(radio => {
+                                radio.checked = (radio.value === this.captureDownloadMode);
+                            });
+                        }
                         // console.log("CatCatch (original): Settings updated:", this.settings);
                     }
                     if (tabId) {
@@ -174,16 +182,24 @@
             this.catCatch.innerHTML = `<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYBAMAAAASWSDLAAAAKlBMVEUAAADLlROxbBlRAD16GS5oAjWWQiOCIytgADidUx/95gHqwwTx0gDZqwT6kfLuAAAACnRSTlMA/vUejV7kuzi8za0PswAAANpJREFUGNNjwA1YSxkYTEqhnKZLLi6F1w0gnKA1shdvHYNxdq1atWobjLMKCOAyC3etlVrUAOH4HtNZmLgoAMKpXX37zO1FwcZAwMDguGq1zKpFmTNnzqx0Bpp2WvrU7ttn9py+I8JgLn1R8Pad22vurNkjwsBReHv33junzuyRnOnMwNCSeFH27K5dq1SNgcZxFMnuWrNq1W5VkNntihdv7ToteGcT0C7mIkE1qbWCYjJnM4CqEoWKdoslChXuUgXJqIcLebiphSgCZRhaPDhcDFhdmUMCGIgEAFA+Uc02aZg9AAAAAElFTkSuQmCC" style="-webkit-user-drag: none;width: 20px;">
             <div id="catCatch" style="${style}">
                 <div id="tips"></div>
-                <button id="download" ${buttonStyle} data-i18n="downloadCapturedData">下载已捕获的数据</button>
-                <button id="clean" ${buttonStyle} data-i18n="deleteCapturedData">删除已捕获数据</button>
-                <div><button id="hide" ${buttonStyle} data-i18n="hide">隐藏</button><button id="close" ${buttonStyle} data-i18n="close">关闭</button></div>
-                <label><input type="checkbox" id="autoDown" ${localStorage.getItem("CatCatchCatch_autoDown") || ""} ${checkboxStyle}><span data-i18n="automaticDownload">完成捕获自动下载</span></label>
-                <label><input type="checkbox" id="ffmpeg" ${localStorage.getItem("CatCatchCatch_ffmpeg") || ""} ${checkboxStyle}><span data-i18n="ffmpeg">使用ffmpeg合并</span></label>
-                <label><input type="checkbox" id="autoToBuffered" ${checkboxStyle}><span data-i18n="autoToBuffered">自动跳转缓冲尾</span></label>
-                <label><input type="checkbox" id="checkHead" ${checkboxStyle}>清理多余头部数据</label>
-                <label><input type="checkbox" id="completeClearCache" ${localStorage.getItem("CatCatchCatch_completeClearCache") || ""} ${checkboxStyle}>下载完成后清空数据</label>
+                <button id="download" ${buttonStyle} data-i18n="downloadCapturedData">تنزيل البيانات الملتقطة</button>
+                <button id="clean" ${buttonStyle} data-i18n="deleteCapturedData">حذف البيانات الملتقطة</button>
+                <div><button id="hide" ${buttonStyle} data-i18n="hide">إخفاء</button><button id="close" ${buttonStyle} data-i18n="close">إغلاق</button></div>
+
+                <div style="margin-top: 5px; margin-bottom: 5px; border-top: 1px solid #ccc; padding-top: 5px;">
+                  <div data-i18n="captureModeTitle" style="font-weight: bold; margin-bottom: 3px;">وضع التنزيل:</div>
+                  <label style="display:block; margin-bottom:2px;"><input type="radio" name="catCatchCaptureModeWidget" value="ffmpeg" ${checkboxStyle}> <span data-i18n="captureModeFfmpegShort">FFMPEG</span></label>
+                  <label style="display:block; margin-bottom:2px;"><input type="radio" name="catCatchCaptureModeWidget" value="mp4box" ${checkboxStyle}> <span data-i18n="captureModeMp4boxShort">MP4Box</span></label>
+                  <label style="display:block;"><input type="radio" name="catCatchCaptureModeWidget" value="separate" ${checkboxStyle}> <span data-i18n="captureModeSeparateShort">منفصل</span></label>
+                </div>
+
+                <label><input type="checkbox" id="autoDown" ${localStorage.getItem("CatCatchCatch_autoDown") || ""} ${checkboxStyle}><span data-i18n="automaticDownload">تنزيل تلقائي عند الاكتمال</span></label>
+                {/* <label><input type="checkbox" id="ffmpeg" ${localStorage.getItem("CatCatchCatch_ffmpeg") || ""} ${checkboxStyle}><span data-i18n="ffmpeg">استخدام ffmpeg للدمج</span></label> */}
+                <label><input type="checkbox" id="autoToBuffered" ${checkboxStyle}><span data-i18n="autoToBuffered">قفز للمخزن المؤقت</span></label>
+                <label><input type="checkbox" id="checkHead" ${checkboxStyle}><span data-i18n="cleanRedundantHeaders">تنظيف الرؤوس</span></label>
+                <label><input type="checkbox" id="completeClearCache" ${localStorage.getItem("CatCatchCatch_completeClearCache") || ""} ${checkboxStyle}><span data-i18n="clearCacheAfterDownload">مسح بعد التنزيل</span></label>
                 <details>
-                    <summary data-i18n="fileName" id="summary">文件名设置</summary>
+                    <summary data-i18n="fileName" id="summary">إعدادات اسم الملف</summary>
                     <div style="font-weight:bold;"><span data-i18n="fileName">文件名</span>: </div><div id="fileName"></div>
                     <div style="font-weight:bold;"><span data-i18n="selector">表达式</span>: </div><div id="selector">Null</div>
                     <div style="font-weight:bold;"><span data-i18n="regular">正则</span>: </div><div id="regular">Null</div>
@@ -318,8 +334,25 @@
             const autoDown = this.catCatch.querySelector("#autoDown");
             if (autoDown) autoDown.addEventListener('change', this.handleAutoDownChange.bind(this));
 
-            const ffmpeg = this.catCatch.querySelector("#ffmpeg");
-            if (ffmpeg) ffmpeg.addEventListener('change', this.handleFfmpegChange.bind(this));
+            // const ffmpeg = this.catCatch.querySelector("#ffmpeg"); // تم استبداله بأزرار الراديو
+            // if (ffmpeg) ffmpeg.addEventListener('change', this.handleFfmpegChange.bind(this));
+
+            // معالجة تغيير وضع الالتقاط والتنزيل في الواجهة المصغرة
+            const captureModeRadiosWidget = this.catCatch.querySelectorAll('input[name="catCatchCaptureModeWidget"]');
+            captureModeRadiosWidget.forEach(radio => {
+                radio.addEventListener('change', (event) => {
+                    if (event.target.checked) {
+                        this.captureDownloadMode = event.target.value;
+                        // إرسال التغيير إلى background.js لتحديث الإعدادات العامة
+                        window.postMessage({
+                            action: "catCatchToBackground", // لـ content-script
+                            Message: "setCaptureDownloadMode", // لـ background.js
+                            mode: this.captureDownloadMode
+                        }, "*");
+                        console.log("CatCatch Widget: Capture mode changed to", this.captureDownloadMode);
+                    }
+                });
+            });
 
             const restartAlways = this.catCatch.querySelector("#restartAlways");
             if (restartAlways) restartAlways.addEventListener('change', this.handleRestartAlwaysChange.bind(this));
@@ -618,7 +651,21 @@
                         setTimeout(() => { this.getFileName(); }, 2000);
                         this.tips.innerHTML = this.i18n("capturingData", "捕获数据中...");
 
-                        this.catchMedia.push({ mimeType: argumentsList[0], bufferList: [] });
+                        // إدارة معرف الجلسة
+                        if (this.catchMedia.length === 0 || this.isComplete) {
+                            if (this.isComplete) { // إذا اكتمل الالتقاط السابق، امسح قبل البدء بجلسة جديدة
+                                this.clearCache(true);
+                            }
+                            this.isComplete = false;
+                            this.currentCaptureSessionId = Date.now().toString(); // استخدام timestamp بسيط كمعرف
+                            console.log("CatCatch: New capture session started with ID:", this.currentCaptureSessionId);
+                        }
+
+                        this.catchMedia.push({
+                            mimeType: argumentsList[0],
+                            bufferList: [],
+                            sessionId: this.currentCaptureSessionId
+                        });
                         const index = this.catchMedia.length - 1;
 
                         // 代理 appendBuffer 方法
@@ -732,95 +779,166 @@
          * 下载捕获的数据
          */
         catchDownload() {
-            if (this.catchMedia.length == 0) {
-                alert(this.i18n("noData", "没抓到有效数据"));
+            const activeMedia = this.catchMedia.filter(item => item.sessionId === this.currentCaptureSessionId);
+
+            if (activeMedia.length === 0) {
+                alert(this.i18n("noData", "لا توجد بيانات ملتقطة للجلسة الحالية. يرجى التأكد من أن الفيديو يعمل وأنه يتم التقاطه."));
+                if (this.catchMedia.length > 0 && !this.currentCaptureSessionId) {
+                    console.warn("CatCatch: No active session ID, but catchMedia is not empty. This might be old data.");
+                    alert(this.i18n("noActiveSession", "لا توجد جلسة التقاط نشطة. قد تكون هذه بيانات قديمة."));
+                }
                 return;
             }
 
-            let downloadWithFFmpeg = this.catchMedia.length >= 2 && localStorage.getItem("CatCatchCatch_ffmpeg") == "checked";
+            //localStorage.getItem("CatCatchCatch_ffmpeg") == "checked" // هذا هو الخيار القديم لواجهة مستخدم ffmpeg
+            // سنستخدم this.captureDownloadMode الذي تم ضبطه من الإعدادات أو الواجهة المصغرة
 
-            /**
-             * 检查文件
-             * 检查是否有头部文件 没有头部文件则提示 不使用ffmpeg合并
-             * 检查是否有多个头部文件 根据用户选项 是否清理多于头部数据
-             */
-            const checkHead = this.catCatch.querySelector("#checkHead");
-            // 仅确认一次是否清除多余头部数据
-            let userConfirmedHeadChoice = false;
+            let performMerge = this.captureDownloadMode === "ffmpeg" || this.captureDownloadMode === "mp4box";
 
-            for (let key in this.catchMedia) {
-                if (!this.catchMedia[key]?.bufferList || this.catchMedia[key].bufferList.length <= 1) continue;
-                let lastHeaderIndex = -1;
+            if (performMerge) {
+                const checkHead = this.catCatch.querySelector("#checkHead");
+                let userConfirmedHeadChoice = false;
+                let hasValidStreamsForMerging = true;
 
-                // 遍历所有 buffer 寻找最后一个头部
-                for (let i = 0; i < this.catchMedia[key].bufferList.length; i++) {
-                    const data = new Uint8Array(this.catchMedia[key].bufferList[i]);
-
-                    // 检查MP4格式的头部 (ftyp)
-                    if (data.length > 8 &&
-                        data[4] === 0x66 && // 'f'
-                        data[5] === 0x74 && // 't'
-                        data[6] === 0x79 && // 'y'
-                        data[7] === 0x70)   // 'p'
-                    {
-                        lastHeaderIndex = i; // 持续更新直到找到最后一个头部
+                for (let key in activeMedia) {
+                    const currentStream = activeMedia[key];
+                    if (!currentStream?.bufferList || currentStream.bufferList.length === 0) { // تحقق من وجود bufferList وأنه ليس فارغًا
+                        if (currentStream.mimeType?.startsWith("video/") || currentStream.mimeType?.startsWith("audio/")) {
+                             // إذا كان المسار مهمًا (فيديو أو صوت) ولكنه فارغ، فهذه مشكلة للدمج
+                            console.warn(`CatCatch: Stream ${currentStream.mimeType} for session ${this.currentCaptureSessionId} has no buffers.`);
+                            // قد لا نرغب في إيقاف الدمج تمامًا إذا كان هناك مسارات أخرى صالحة،
+                            // ولكن يجب أن نكون على دراية بأن هذا المسار لن يساهم.
+                            // في الوقت الحالي، سنفترض أن هذا لا يبطل الدمج بالضرورة إذا كانت المسارات الأخرى جيدة.
+                        }
+                        continue;
                     }
-                    // 检查WebM格式的头部 (1A 45 DF A3)
-                    else if (data.length > 4 &&
-                        data[0] === 0x1A &&
-                        data[1] === 0x45 &&
-                        data[2] === 0xDF &&
-                        data[3] === 0xA3) {
-                        lastHeaderIndex = i; // 持续更新直到找到最后一个WebM头部
+                    if (currentStream.bufferList.length <= 1 && (currentStream.mimeType?.startsWith("video/") || currentStream.mimeType?.startsWith("audio/"))){
+                        // إذا كان المسار يحتوي على قطعة واحدة فقط، فقد لا يكون له معنى كبير للدمج أو قد يكون مجرد رأس.
+                        // console.log(`CatCatch: Stream ${currentStream.mimeType} has only one buffer. Might be insufficient for merging.`);
+                    }
+
+                    let lastHeaderIndex = -1;
+                    for (let i = 0; i < currentStream.bufferList.length; i++) {
+                        const data = new Uint8Array(currentStream.bufferList[i]);
+                        if (data.length > 8 && data[4] === 0x66 && data[5] === 0x74 && data[6] === 0x79 && data[7] === 0x70) { // ftyp
+                            lastHeaderIndex = i;
+                        } else if (data.length > 4 && data[0] === 0x1A && data[1] === 0x45 && data[2] === 0xDF && data[3] === 0xA3) { // webm
+                            lastHeaderIndex = i;
+                        }
+                    }
+                    if (lastHeaderIndex === -1 && (currentStream.mimeType?.startsWith("video/") || currentStream.mimeType?.startsWith("audio/"))) {
+                        alert(this.i18n("noHead", "لم يتم الكشف عن بيانات رأس الفيديو/الصوت لمسار واحد على الأقل، يرجى استخدام أداة محلية للمعالجة أو التنزيل بشكل منفصل."));
+                        hasValidStreamsForMerging = false;
+                    }
+                    if (lastHeaderIndex > 0) {
+                        if (!userConfirmedHeadChoice && !checkHead.checked) {
+                            checkHead.checked = window.confirm(this.i18n("headData", "تم الكشف عن بيانات رأس إضافية، هل ترغب في تنظيفها؟"));
+                            userConfirmedHeadChoice = true;
+                        }
+                        if (checkHead.checked) {
+                            currentStream.bufferList.splice(0, lastHeaderIndex);
+                        }
                     }
                 }
-                if (lastHeaderIndex == -1) {
-                    alert(this.i18n("noHead", "没有检测到视频头部数据, 请使用本地工具处理"));
-                    downloadWithFFmpeg = false; // 没有头部数据则不使用ffmpeg合并
-                }
-                if (lastHeaderIndex > 0) {
-                    // 只有第一次遇到多余头部且用户尚未选择时才提示
-                    if (!userConfirmedHeadChoice && !checkHead.checked) {
-                        checkHead.checked = window.confirm(this.i18n("headData", "检测到多余头部数据, 是否清除?"));
-                        userConfirmedHeadChoice = true; // 标记已经询问过用户
+                if (!hasValidStreamsForMerging && this.captureDownloadMode !== "separate") {
+                    console.warn("CatCatch: Missing headers in some streams, forcing separate download for this attempt.");
+                    this.downloadDirect(activeMedia);
+                    if (this.isComplete || localStorage.getItem("CatCatchCatch_completeClearCache") === "checked") {
+                        this.clearCache(true);
                     }
-
-                    if (checkHead.checked) {
-                        this.catchMedia[key].bufferList.splice(0, lastHeaderIndex); // 移除最后一个头部之前的所有元素
-                    }
+                    if (this.tips) this.tips.innerHTML = this.i18n("downloadCompleted", "اكتمل التنزيل");
+                    return;
                 }
             }
 
-            downloadWithFFmpeg ? this.downloadWithFFmpeg() : this.downloadDirect();
+            switch (this.captureDownloadMode) {
+                case "ffmpeg":
+                    if (activeMedia.length >= 2) {
+                        this.downloadWithFFmpeg(activeMedia);
+                    } else {
+                        console.log("CatCatch: FFMPEG merge selected, but less than 2 media streams found for current session. Downloading directly.");
+                        this.downloadDirect(activeMedia);
+                    }
+                    break;
+                case "mp4box":
+                    let videoStream = null;
+                    let audioStream = null;
+                    for (const stream of activeMedia) {
+                        if (stream.mimeType && stream.mimeType.startsWith('video/') && !videoStream) {
+                            videoStream = stream;
+                        } else if (stream.mimeType && stream.mimeType.startsWith('audio/') && !audioStream) {
+                            audioStream = stream;
+                        }
+                    }
+                    if (videoStream && audioStream && videoStream.bufferList.length > 0 && audioStream.bufferList.length > 0) {
+                        const filesToMerge = [
+                            { dataUrl: URL.createObjectURL(new Blob(videoStream.bufferList, { type: videoStream.mimeType })), mimeType: videoStream.mimeType },
+                            { dataUrl: URL.createObjectURL(new Blob(audioStream.bufferList, { type: audioStream.mimeType })), mimeType: audioStream.mimeType }
+                        ];
+                        const title = this.fileName ? this.fileName.innerHTML.trim() : document.title;
+                        window.postMessage({
+                            action: "catCatchToBackground",
+                            Message: "mergeCapturedAVRequest",
+                            files: filesToMerge,
+                            filenameHint: title,
+                            tabId: this.tabId
+                        }, "*");
+                        console.log("CatCatch: MP4Box merge request sent for session:", this.currentCaptureSessionId);
+                        this.clearCache(true); // مسح بعد إرسال الطلب بنجاح
+                    } else {
+                        console.log("CatCatch: MP4Box merge selected, but a clear video/audio pair (with data) was not found for current session. Downloading directly.");
+                        this.downloadDirect(activeMedia);
+                    }
+                    break;
+                case "separate":
+                default:
+                    this.downloadDirect(activeMedia);
+                    break;
+            }
 
-            if (this.isComplete) {
-                if (localStorage.getItem("CatCatchCatch_completeClearCache") == "checked") { this.clearCache(); }
-                if (this.tips) {
-                    this.tips.innerHTML = this.i18n("downloadCompleted", "下载完毕...");
+            if (this.isComplete || localStorage.getItem("CatCatchCatch_completeClearCache") === "checked") {
+                // المسح يتم الآن بشكل صريح داخل downloadWithFFmpeg وبعد إرسال طلب MP4Box
+                // أو هنا للتنزيل المنفصل أو حالات الفشل
+                if (this.captureDownloadMode === "separate" ||
+                    (this.captureDownloadMode === "ffmpeg" && activeMedia.length < 2) ||
+                    (this.captureDownloadMode === "mp4box" && !(videoStream && audioStream && videoStream.bufferList.length > 0 && audioStream.bufferList.length > 0)) ){
+                    this.clearCache(true);
                 }
+            }
+            if (this.tips) {
+                this.tips.innerHTML = this.i18n("downloadCompleted", "اكتمل التنزيل/الدمج");
             }
         }
 
         /**
          * 使用FFmpeg合并下载捕获的数据
+         * @param {Array} mediaToProcess - الوسائط التي سيتم دمجها (عادةً activeMedia)
          */
-        downloadWithFFmpeg() {
+        downloadWithFFmpeg(mediaToProcess) {
+            // if (!mediaToProcess || mediaToProcess.length < 2) { // تم التحقق من هذا في catchDownload
+            //     console.log("CatCatch: FFMPEG merge called with less than 2 streams. Downloading directly.");
+            //     this.downloadDirect(mediaToProcess || this.catchMedia.filter(item => item.sessionId === this.currentCaptureSessionId));
+            //     return;
+            // }
+
             const media = [];
-            for (let item of this.catchMedia) {
+            for (let item of mediaToProcess) {
                 if (!item || !item.bufferList || item.bufferList.length === 0) continue;
 
                 const mime = (item.mimeType && item.mimeType.split(';')[0]) || 'video/mp4';
                 const fileBlob = new Blob(item.bufferList, { type: mime });
-                const type = mime.split('/')[0] || 'video';
+                const type = mime.split('/')[0] || 'video'; // 'video' or 'audio'
 
                 media.push({
                     data: (typeof chrome == "object") ? URL.createObjectURL(fileBlob) : fileBlob,
-                    type: type
+                    type: type,
+                    originalMimeType: item.mimeType
                 });
             }
 
-            if (media.length === 0) {
-                alert(this.i18n("noData", "没有有效数据可下载"));
+            if (media.length < 2) { // التحقق مرة أخرى بعد معالجة bufferList
+                alert(this.i18n("notEnoughDataForMerge", "لا توجد بيانات كافية للدمج. سيتم التنزيل بشكل منفصل إذا أمكن."));
+                this.downloadDirect(mediaToProcess);
                 return;
             }
 
@@ -832,28 +950,55 @@
                 files: media,
                 title: title,
                 output: title,
-                quantity: media.length
+                quantity: media.length,
+                sessionId: this.currentCaptureSessionId
             });
+            console.log("CatCatch: Data sent to FFmpeg for session:", this.currentCaptureSessionId);
+            this.clearCache(true); // مسح بعد إرسال البيانات بنجاح
         }
         /**
          * 直接下载捕获的数据
+         * @param {Array} mediaToDownload - الوسائط التي سيتم تنزيلها
          */
-        downloadDirect() {
+        downloadDirect(mediaToDownload) {
+            if (!mediaToDownload || mediaToDownload.length === 0) {
+                alert(this.i18n("noDataToDownload", "لا توجد بيانات لتنزيلها."));
+                return;
+            }
             const a = document.createElement('a');
             let downloadCount = 0;
 
-            for (let item of this.catchMedia) {
+            for (let item of mediaToDownload) {
                 if (!item || !item.bufferList || item.bufferList.length === 0) continue;
 
-                const mime = (item.mimeType && item.mimeType.split(';')[0]) || 'video/mp4';
-                const type = mime.split('/')[0] == "video" ? "mp4" : "mp3";
+                const mime = (item.mimeType && item.mimeType.split(';')[0]) || 'application/octet-stream';
+                let ext = 'bin'; // امتداد افتراضي
+                if (mime.includes('mp4')) ext = 'mp4';
+                else if (mime.includes('webm')) ext = 'webm';
+                else if (mime.includes('ogg')) ext = 'ogg'; // يمكن أن يكون فيديو أو صوت
+                else if (mime.includes('mpeg') && mime.startsWith('audio/')) ext = 'mp3';
+                else if (mime.includes('aac')) ext = 'aac';
+                else if (mime.startsWith('video/')) ext = 'mp4'; // افتراضي للفيديو إذا لم يكن معروفًا
+                else if (mime.startsWith('audio/')) ext = 'mp3'; // افتراضي للصوت إذا لم يكن معروفًا
+
+
                 const fileBlob = new Blob(item.bufferList, { type: mime });
 
                 a.href = URL.createObjectURL(fileBlob);
-                a.download = `${this.fileName ? this.fileName.innerHTML.trim() : document.title}.${type}`;
+                // إضافة جزء لتمييز الملفات إذا كان هناك أكثر من ملف بنفس الاسم الأساسي
+                let fileNameSuffix = "";
+                if (mediaToDownload.length > 1) {
+                    if (item.mimeType && item.mimeType.startsWith('video/')) {
+                        fileNameSuffix = "_video";
+                    } else if (item.mimeType && item.mimeType.startsWith('audio/')) {
+                        fileNameSuffix = "_audio";
+                    } else {
+                        fileNameSuffix = `_part${downloadCount + 1}`;
+                    }
+                }
+                a.download = `${this.fileName ? this.fileName.innerHTML.trim() : document.title}${fileNameSuffix}.${ext}`;
                 a.click();
 
-                // 释放URL对象以避免内存泄漏
                 setTimeout(() => URL.revokeObjectURL(a.href), 100);
                 downloadCount++;
             }
@@ -861,7 +1006,7 @@
             a.remove();
 
             if (downloadCount === 0) {
-                alert(this.i18n("noData", "没有有效数据可下载"));
+                alert(this.i18n("noData", "لم يتم العثور على بيانات صالحة للتنزيل."));
             }
         }
 
@@ -875,22 +1020,40 @@
 
         /**
          * 清理缓存
+         * @param {boolean} forceClearAll
          */
-        clearCache() {
-            this.mediaSize = 0;
-            if (this.isComplete) {
+        clearCache(forceClearAll = false) {
+            if (forceClearAll) {
                 this.catchMedia = [];
+                this.mediaSize = 0;
                 this.isComplete = false;
+                this.currentCaptureSessionId = null; // إعادة تعيين معرف الجلسة
+                if (this.tips) {
+                    this.tips.innerHTML = this.i18n("waiting", "انتظار تشغيل الفيديو");
+                }
+                console.log("CatCatch: Cache cleared forcefully. Session ID reset.");
                 return;
             }
 
+            this.mediaSize = 0;
+            if (this.isComplete) {
+                this.catchMedia = []; // امسح بالكامل إذا اكتمل الالتقاط ولكن لم يتم فرض المسح
+                this.isComplete = false;
+                // this.currentCaptureSessionId = null; // يمكن أيضًا إعادة تعيينه هنا لضمان الاتساق
+                console.log("CatCatch: Cache cleared because capture was complete.");
+                return;
+            }
+
+            // السلوك الأصلي: الاحتفاظ بالجزء الأول من كل مخزن مؤقت إذا لم يكن الالتقاط مكتملاً ولم يتم فرض المسح
+            console.log("CatCatch: Partial clear (keeping first buffer of each stream).");
             for (let key in this.catchMedia) {
                 const media = this.catchMedia[key];
                 if (media && media.bufferList && media.bufferList.length > 0) {
-                    // 保留第一个buffer块，清除其余的
                     const firstBuffer = media.bufferList[0];
                     media.bufferList = [firstBuffer];
                     this.mediaSize += firstBuffer ? (firstBuffer.byteLength || 0) : 0;
+                } else if (media) {
+                    media.bufferList = [];
                 }
             }
         }

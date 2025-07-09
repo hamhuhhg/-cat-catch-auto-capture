@@ -36,7 +36,17 @@ chrome.storage.sync.get(G.OptionLists, function (items) {
         for (let key in items) {
             if (key == "Ext" || key == "Type" || key == "Regex") { continue; }
             if (typeof items[key] == "boolean") {
-                $(`#${key}`).prop("checked", items[key]);
+                // تجاهل mergeCapturedAV القديم إذا كان موجودًا، لأننا نستخدم captureDownloadMode
+                if (key === "mergeCapturedAV" && items.captureDownloadMode !== undefined) {
+                    // لا تفعل شيئًا، سيتم التعامل مع captureDownloadMode أدناه
+                } else {
+                    $(`#${key}`).prop("checked", items[key]);
+                }
+            } else if (key === "captureDownloadMode") {
+                // تعيين زر الراديو المحدد
+                if (items[key]) {
+                    $(`input[name="captureDownloadModeRadio"][value="${items[key]}"]`).prop("checked", true);
+                }
             } else {
                 $(`#${key}`).val(items[key]);
             }
@@ -170,7 +180,11 @@ $("[save='input']").on("input", function () {
 });
 // 调试模式 使用网页标题做文件名 使用PotPlayer预览 显示网站图标 刷新自动清理
 $("[save='click']").bind("click", function () {
-    chrome.storage.sync.set({ [this.id]: $(this).prop('checked') });
+    if (this.name === "captureDownloadModeRadio") { // التحقق من اسم مجموعة الراديو
+        chrome.storage.sync.set({ captureDownloadMode: this.value });
+    } else {
+        chrome.storage.sync.set({ [this.id]: $(this).prop('checked') });
+    }
 });
 // [save='select'] 元素 储存
 $("[save='select']").on("change", function () {
