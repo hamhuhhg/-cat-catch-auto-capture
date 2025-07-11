@@ -172,7 +172,7 @@ G.OptionLists = {
     watchedOnTabClose: true,
     watchedOnCaptureComplete: true,
     // mergeCapturedAV: false, // Option for local MP4Box merging - Replaced by captureDownloadMode
-    captureDownloadMode: "ffmpeg", // "ffmpeg", "mp4box", "separate" - Default mode
+    captureDownloadMode: "ffmpeg", // "ffmpeg", "mp4box", "direct"
 };
 // 本地储存的配置
 G.LocalVar = {

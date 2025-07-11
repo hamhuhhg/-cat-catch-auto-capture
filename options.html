@@ -781,34 +781,21 @@
               </label>
             </div>
           </div>
-          <!-- <div class="item">
-            <div data-i18n="mergeCapturedAVLabel"></div>
+          <!-- Removed mergeCapturedAV checkbox -->
+          <div class="item">
+            <div data-i18n="captureDownloadModeLabel">Download Mode for Captured Media:</div>
             <div class="switch">
-              <label class="switchLabel switchRadius">
-                <input type="checkbox" save="click" id="mergeCapturedAV" class="switchInput" />
-                <span class="switchRound switchRadius"><em class="switchRoundBtn switchRadius"></em></span>
+              <label>
+                <input type="radio" name="captureDownloadMode" value="ffmpeg" save="click"> <span data-i18n="ffmpegMergeLabel">Merge with FFMPEG (Online)</span>
+              </label><br>
+              <label>
+                <input type="radio" name="captureDownloadMode" value="mp4box" save="click"> <span data-i18n="mp4boxMergeLabel">Merge with MP4Box (Local)</span>
+              </label><br>
+              <label>
+                <input type="radio" name="captureDownloadMode" value="direct" save="click"> <span data-i18n="directDownloadLabel">Download Audio/Video Separately</span>
               </label>
             </div>
-          </div> -->
-          <!-- خيارات وضع الالتقاط والتنزيل -->
-          <div class="item" style="margin-top: 10px;">
-            <div data-i18n="captureDownloadModeLabel" style="font-weight: bold;">وضع التقاط وتنزيل الفيديو/الصوت:</div>
           </div>
-          <div class="item" style="flex-direction: column; align-items: flex-start; padding-left: 15px;">
-            <label style="margin-bottom: 5px; cursor: pointer;">
-              <input type="radio" name="captureDownloadModeRadio" value="ffmpeg" save="click" id="captureModeFfmpeg" class="radioInput" style="margin-right: 5px;">
-              <span data-i18n="captureModeFfmpegLabel">الدمج باستخدام FFMPEG (الخدمة الخارجية)</span>
-            </label>
-            <label style="margin-bottom: 5px; cursor: pointer;">
-              <input type="radio" name="captureDownloadModeRadio" value="mp4box" save="click" id="captureModeMp4box" class="radioInput" style="margin-right: 5px;">
-              <span data-i18n="captureModeMp4boxLabel">الدمج باستخدام MP4Box (محلي)</span>
-            </label>
-            <label style="cursor: pointer;">
-              <input type="radio" name="captureDownloadModeRadio" value="separate" save="click" id="captureModeSeparate" class="radioInput" style="margin-right: 5px;">
-              <span data-i18n="captureModeSeparateLabel">تنزيل الملفات بشكل منفصل (بدون دمج)</span>
-            </label>
-          </div>
-          <!-- نهاية خيارات وضع الالتقاط والتنزيل -->
         </div>
         <div class="flex-end">
           <button type="button" class="resetOption" data-i18n="resetSettings"></button>
